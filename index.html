@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Padel Cove 1st Anniversary — Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d3a9e">
+<style>
+:root{--navy:#0a2a7a;--lime:#c5f544;--limed:#5c8a00;--card:rgba(8,32,100,.55);--tx:#fff;--mu:#b8cdf5;--ac:var(--lime);--ac2:rgba(197,245,68,.18);--bd:rgba(255,255,255,.16);--lv:#ff5a5f;--fh:'Unbounded','Arial Black',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(180deg,#2f78ea 0,#1448b8 40%,#0b2b84 100%) fixed;min-height:100vh;padding-top:env(safe-area-inset-top)}
+header{padding:16px 16px 6px;max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+#logo{height:80px;max-width:150px;object-fit:contain}
+.pill{border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 14px;font:800 11px var(--fh);letter-spacing:.12em;background:rgba(255,255,255,.08)}
+/* PERUBAHAN 3: Memperbesar ukuran tag judul turnamen */
+.tag{display:inline-block;background:var(--lime);color:var(--navy);border-radius:8px;padding:8px 16px;font:800 clamp(16px, 4.5vw, 24px) var(--fh);letter-spacing:.14em;line-height:1.2;margin-bottom:8px}
+h1{margin:10px 0 4px;font:900 clamp(40px,13vw,68px)/.95 var(--fh);font-style:italic;text-transform:uppercase;text-shadow:0 4px 0 var(--navy)}
+h1 em{display:block;color:var(--lime);text-shadow:0 4px 0 var(--limed)}
+header small{color:var(--mu)}
+.tape{overflow:hidden;white-space:nowrap;background:var(--lime);color:var(--navy);font:800 11px var(--fh);letter-spacing:.14em;padding:9px 0;transform:rotate(-1.6deg);margin:14px -8px 10px;box-shadow:0 3px 0 var(--navy)}
+.tape span{display:inline-block;padding-left:16px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:rgba(8,30,95,.88);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+nav button,.chip{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:999px;padding:8px 16px;font:700 12px var(--fh);letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+nav button.on,.chip.on{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+main{max-width:760px;margin:0 auto;padding:14px 12px}
+h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin:20px 0 10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:12px 14px;margin-bottom:10px;backdrop-filter:blur(4px)}
+.card.live{border:2px solid var(--lime);box-shadow:0 0 0 3px rgba(197,245,68,.2)}
+.meta{display:flex;justify-content:space-between;gap:8px;color:var(--mu);font-size:11px;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+.row{display:flex;justify-content:space-between;padding:3px 0;font-weight:600}.row b{font:800 20px var(--fh);min-width:26px;text-align:right}
+.row.win{color:var(--lime)}
+.badge{background:var(--lv);color:#fff;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
+table{width:100%;border-collapse:collapse;font-size:13px}th{color:var(--mu);font-size:11px}th,td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--bd)}th:nth-child(3),td:nth-child(3){text-align:left}
+tr.q td{background:var(--ac2)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+input,select{width:100%;padding:12px 16px;border:0;border-radius:999px;background:#fff;color:var(--navy);font:600 15px system-ui;margin-bottom:12px}
+.mu{color:var(--mu)}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:999px;background:var(--lime);color:var(--navy);font:800 12px var(--fh);letter-spacing:.08em;text-transform:uppercase;margin-top:10px;cursor:pointer;box-shadow:0 4px 0 var(--limed)}
+a{color:var(--lime)}
+.spons{max-width:736px;margin:14px auto;padding:14px;text-align:center;background:#fff;border-radius:20px;color:var(--navy)}.spons small{font:800 10px var(--fh);letter-spacing:.14em;color:var(--navy)}
+.spons div{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;margin-top:10px}
+.spons img{height:46px;max-width:120px;object-fit:contain}.ph{width:100px;height:46px;border:1.5px dashed #b7c4e6;border-radius:10px;display:grid;place-items:center;color:#8a99c2;font-size:11px}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18px + env(safe-area-inset-bottom))}
+.pt{background:var(--lime);color:var(--navy);border-radius:8px;padding:2px 8px;margin-left:8px;font:800 12px var(--fh);min-width:36px;text-align:center}
+.row{align-items:center}.row span:first-child{flex:1}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><img id="logo" src="logo.png" alt="Cove Padel" onerror="this.style.display='none'"><span class="pill">20 — 22 NOV 2026</span></div>
+<span class="tag">COVE 1ST ANNIVERSARY TOURNAMENT</span>
+<h1>Live<em>Score</em></h1>
+<small id="upd">Memuat data dari Supabase…</small>
+</header>
+<div class="tape"><span>LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦ LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦</span></div>
+<nav id="nav"></nav>
+<main id="view"></main>
+<section class="spons"><small>DIDUKUNG OLEH</small><div id="sp"><div class="ph">Sponsor</div><div class="ph">Sponsor</div><div class="ph">Sponsor</div></div></section>
+<footer>Skor diperbarui otomatis dari server pusat.</footer>
+<!-- Supabase Realtime: skor live tanpa menunggu polling. Jika CDN gagal dimuat, halaman tetap jalan dengan polling 15 detik. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ====== KONFIGURASI SUPABASE ======
+const SUPA_URL = 'https://toyfsmqgqmwxezcaxbhd.supabase.co'; // Pastikan URL ini benar
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRveWZzbXFncW13eGV6Y2F4YmhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDk5MjUsImV4cCI6MjEwOTk4NTkyNX0.Qcq-Ld9VUcOcGUxnagMlPiywAlgxB2-53O2n0ljzzNk'; // Gunakan kunci eyJ...
+const HEADERS = { 
+  'apikey': SUPA_KEY,
+  'Authorization': 'Bearer ' + SUPA_KEY,
+  'Content-Type': 'application/json'
+};
+// ==================================
+
+const TABS = [['live', 'Live'], ['klas', 'Klasemen'], ['jadwal', 'Jadwal'], ['cari', 'Cari Pemain']];
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let M = [], K = [], P = [], tab = 'live', q = '';
+
+// PERUBAHAN 1 & 2: Mapping label kategori dan variabel filter aktif
+const KATEGORI_LABEL = {
+  'BW': "Women's Beginner",
+  'LB': 'Lower Bronze Mix',
+  'MB': "Men's Bronze"
+};
+let filterKat = null; 
+
+// G:A:1 -> Juara Grup A, W:BW-QF1 -> Pemenang QF1, L:BW-SF1 -> Kalah SF1
+function labelSumber(src) {
+  if (!src) return 'TBD';
+  let x = /^G:([A-P]):(\d+)$/.exec(src);
+  if (x) return (x[2] === '1' ? 'Juara' : x[2] === '2' ? 'Runner-up' : 'Peringkat ' + x[2]) + ' Grup ' + x[1];
+  x = /^([WL]):[A-Z]+-(.+)$/.exec(src);
+  if (x) return (x[1] === 'W' ? 'Pemenang ' : 'Kalah ') + x[2];
+  return src;
+}
+const BABAK = { QF: 'Perempat Final', SF: 'Semifinal', '3RD': 'Perebutan Juara 3', FIN: 'Final' };
+function labelBabak(m) {
+  if (m.match_type === 'group') return 'Group ' + m.group_code;
+  const n = (/(\d+)$/.exec(m.code) || [])[1];
+  return (BABAK[m.round_code] || m.round_code) + (n && m.round_code !== '3RD' ? ' ' + n : '');
+}
+
+let fetching = false, fetchLagi = false, lastPairs = 0, lastUpd = '';
+
+async function fetchData() {
+  if (fetching) { fetchLagi = true; return; }   // jangan dua pengambilan sekaligus
+  fetching = true;
+  try {
+    const ambilPairs = !P.length || Date.now() - lastPairs > 600000;   // daftar pasangan jarang berubah: 10 menit
+    const [resM, resS, resK, resP] = await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/matches?select=code,category_code,match_type,round_code,group_code,pair1_code,pair2_code,pair1_source,pair2_source,status,games1,games2,assigned_court,planned_start&order=planned_start.asc.nullslast,code.asc`, { headers: HEADERS }),
+      fetch(`${SUPA_URL}/rest/v1/match_state?select=match_code,games1,games2,display1,display2`, { headers: HEADERS }),
+      fetch(`${SUPA_URL}/rest/v1/v_klasemen_publik?select=*`, { headers: HEADERS }),
+      ambilPairs ? fetch(`${SUPA_URL}/rest/v1/pairs?select=code,player1,player2,category_code,group_code`, { headers: HEADERS }) : null
+    ]);
+
+    if (!resM.ok || !resS.ok || !resK.ok || (resP && !resP.ok)) {
+      throw new Error('Gagal mengambil data dari salah satu tabel Supabase.');
+    }
+
+    const matches = await resM.json();
+    const states = await resS.json();
+    K = await resK.json();
+    if (resP) { P = await resP.json(); lastPairs = Date.now(); }
+
+    const stateMap = {};
+    states.forEach(s => stateMap[s.match_code] = s);
+
+    M = matches.map(m => {
+      const st = stateMap[m.code];
+      const nama1 = P.find(x => x.code === m.pair1_code);
+      const nama2 = P.find(x => x.code === m.pair2_code);
+
+      return {
+        id: m.code, kat: m.category_code, babak: labelBabak(m),
+        p1: nama1 ? `${nama1.player1} / ${nama1.player2}` : (m.pair1_code || labelSumber(m.pair1_source)),
+        p2: nama2 ? `${nama2.player1} / ${nama2.player2}` : (m.pair2_code || labelSumber(m.pair2_source)),
+        lap: m.assigned_court || '-', 
+        status: m.status,
+        g1: m.status === 'finished' ? m.games1 : (st ? st.games1 : 0),
+        g2: m.status === 'finished' ? m.games2 : (st ? st.games2 : 0),
+        d1: st ? st.display1 : '', d2: st ? st.display2 : '',
+        live: m.status === 'live'
+      };
+    });
+
+    render();
+    lastUpd = 'Diperbarui ' + jam();
+    tampilStatus();
+  } catch (e) {
+    console.error("Error fetching data:", e);
+    $('#upd').textContent = 'Gagal memuat data, mencoba lagi…';
+  } finally {
+    fetching = false;
+    if (fetchLagi) { fetchLagi = false; fetchData(); }
+  }
+}
+
+const jam = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+// ====== REALTIME ======
+let sb = null, kanal = null, rtOk = false, pollTimer = null, tidurTimer = null, segarTimer = null;
+
+function tampilStatus() {
+  if (!lastUpd) return;
+  $('#upd').textContent = lastUpd + (rtOk ? ' · skor live ⚡' : ' · diperbarui tiap 15 detik');
+}
+
+function jadwalkanPoll() {
+  clearTimeout(pollTimer);
+  pollTimer = setTimeout(async () => {
+    if (!document.hidden) await fetchData();
+    jadwalkanPoll();
+  }, rtOk ? 60000 : 15000);
+}
+
+function segarkanSegera(ms = 1500) {
+  clearTimeout(segarTimer);
+  segarTimer = setTimeout(fetchData, ms);
+}
+
+function setMode(ok) {
+  if (rtOk !== ok) { rtOk = ok; jadwalkanPoll(); }
+  tampilStatus();
+}
+
+function terapkanState(s) {
+  if (!s || !s.match_code) return;
+  const m = M.find(x => x.id === s.match_code);
+  if (!m || !m.live) { segarkanSegera(); return; }
+  m.g1 = s.games1; m.g2 = s.games2;
+  m.d1 = s.display1 || ''; m.d2 = s.display2 || '';
+  render();
+  lastUpd = 'Diperbarui ' + jam();
+  tampilStatus();
+  if (!s.display1 && !s.display2) segarkanSegera();
+}
+
+function mulaiRealtime() {
+  if (kanal) return;
+  if (!window.supabase || !window.supabase.createClient) { setMode(false); return; }
+  try {
+    if (!sb) sb = window.supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+    kanal = sb.channel('skor-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'match_state' }, p => terapkanState(p.new))
+      .subscribe(status => {
+        if (status === 'SUBSCRIBED') { setMode(true); segarkanSegera(300); }
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') setMode(false);
+      });
+  } catch (e) {
+    console.error('Realtime gagal:', e);
+    kanal = null;
+    setMode(false);
+  }
+}
+
+function hentikanRealtime() {
+  if (sb && kanal) sb.removeChannel(kanal);
+  kanal = null;
+  setMode(false);
+}
+
+document.addEventListener('visibilitychange', () => {
+  clearTimeout(tidurTimer);
+  if (document.hidden) {
+    tidurTimer = setTimeout(hentikanRealtime, 120000);
+  } else {
+    mulaiRealtime();
+    segarkanSegera(300);
+  }
+});
+
+function card(m) {
+  const s = m.status === 'finished' || m.status === 'live' ? [m.g1, m.g2] : null;
+  const w = m.status === 'finished' ? (Number(m.g1) > Number(m.g2) ? 1 : 2) : 0;
+  const when = m.status === 'finished' ? 'Selesai' : (m.live ? '<span class="badge">LIVE</span> ' : '') + 'Lap ' + esc(m.lap);
+  const pt1 = m.d1 ? '<span class="pt">' + esc(m.d1) + '</span>' : '';
+  const pt2 = m.d2 ? '<span class="pt">' + esc(m.d2) + '</span>' : '';
+  // Tampilkan label kategori yang sudah di-mapping
+  const katLabel = KATEGORI_LABEL[m.kat] || m.kat;
+
+  return '<div class="card' + (m.live ? ' live' : '') + '"><div class="meta"><span>' + esc(katLabel) + ' · ' + esc(m.babak) + '</span><span>' + when + '</span></div>' +
+    '<div class="row' + (w == 1 ? ' win' : '') + '"><span>' + esc(m.p1) + '</span><b>' + (s ? esc(s[0]) : '') + '</b>' + pt1 + '</div>' +
+    '<div class="row' + (w == 2 ? ' win' : '') + '"><span>' + esc(m.p2) + '</span><b>' + (s ? esc(s[1]) : '') + '</b>' + pt2 + '</div></div>';
+}
+
+// PERUBAHAN 1 & 2: Menggunakan label mapping untuk chip
+const chips = (opts, cur, key) => '<div class="chips">' + opts.map(o => {
+  const label = KATEGORI_LABEL[o] || o;
+  return '<button class="chip' + (o === cur ? ' on' : '') + '" data-f="' + key + '" data-v="' + esc(o) + '">' + esc(label) + '</button>';
+}).join('') + '</div>';
+
+const V = {
+  live() {
+    const a = M.filter(m => m.live);
+    const n = M.filter(m => m.status === 'ready' || m.status === 'scheduled').slice(0, 6);
+    const r = M.filter(m => m.status === 'finished').reverse().slice(0, 6);
+
+    return '<h2>Sedang berlangsung</h2>' + (a.map(card).join('') || '<p class="mu">Belum ada pertandingan yang berlangsung.</p>') +
+      '<h2>Pertandingan berikutnya</h2>' + (n.map(card).join('') || '<p class="mu">Tidak ada jadwal berikutnya.</p>') +
+      '<h2>Hasil terbaru</h2>' + (r.map(card).join('') || '<p class="mu">Belum ada hasil.</p>');
+  },
+  klas() {
+    if (!K.length) return '<p class="mu">Belum ada data klasemen.</p>';
+    const KAT = [...new Set(K.map(k => k.category_code))];
+    
+    // PERUBAHAN 2: Gunakan filterKat jika sudah dipilih, jika belum gunakan KAT[0]
+    if (!filterKat || !KAT.includes(filterKat)) filterKat = KAT[0];
+
+    let html = chips(KAT, filterKat, 'kat');
+
+    const grupMap = {};
+    K.filter(k => k.category_code === filterKat).forEach(k => {
+      if (!grupMap[k.group_code]) grupMap[k.group_code] = [];
+      grupMap[k.group_code].push(k);
+    });
+
+    for (const g in grupMap) {
+      html += `<div class="card"><b>${esc(KATEGORI_LABEL[filterKat] || filterKat)} — Group ${esc(g)}</b><table><tr><th>#</th><th>Pasangan</th><th>M</th><th>W</th><th>L</th><th>Sel</th></tr>`;
+      html += grupMap[g].map((r, i) => `<tr class="${i < 2 ? 'q' : ''}"><td>${i+1}</td><td>${esc(r.nama_pasangan)}</td><td>${r.main}</td><td>${r.menang}</td><td>${r.kalah}</td><td>${r.selisih_game}</td></tr>`).join('');
+      html += `</table></div>`;
+    }
+    return html + '<p class="mu">M = main, W = menang, L = kalah, Sel = selisih game. Baris hijau = zona lolos.</p>';
+  },
+  jadwal() {
+    const l = M.filter(m => m.status === 'scheduled' || m.status === 'ready');
+    return (l.map(card).join('') || '<p class="mu">Belum ada jadwal.</p>');
+  },
+  cari() { return '<input id="q" type="search" placeholder="Cari nama pemain atau ID pasangan…" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
+};
+
+function hasilCari() {
+  const t = q.trim().toLowerCase(), box = $('#hs'); if (!box) return;
+  if (t.length < 2) { box.innerHTML = '<p class="mu">Ketik minimal 2 huruf.</p>'; return; }
+  
+  const filtered = P.filter(r => (r.player1 + ' ' + r.player2 + ' ' + r.code).toLowerCase().includes(t));
+  box.innerHTML = filtered.slice(0, 12).map(r => {
+    const nama = r.player1 + ' / ' + r.player2;
+    const laga = M.filter(m => m.p1 === nama || m.p2 === nama).map(card).join('');
+    return `<h2>${esc(nama)}</h2><p class="mu">${esc(KATEGORI_LABEL[r.category_code] || r.category_code)} · Group ${esc(r.group_code || '-')} · ${esc(r.code)}</p>` + (laga || '<p class="mu">Belum ada jadwal.</p>');
+  }).join('') || '<p class="mu">Pemain tidak ditemukan.</p>';
+}
+
+function render() {
+  $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
+  if (tab === 'cari' && $('#q')) return hasilCari();
+  $('#view').innerHTML = V[tab](); 
+  if (tab === 'cari') hasilCari();
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-t],[data-f]'); if (!el) return; const d = el.dataset;
+  if (d.t) { tab = d.t; return render(); }
+  
+  // PERUBAHAN 2: Logika filter chip yang benar
+  if (d.f === 'kat') {
+    filterKat = d.v;
+    render();
+  }
+});
+
+document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilCari(); } });
+
+// Render awal & polling
+render();
+fetchData();
+mulaiRealtime();
+jadwalkanPoll();
+</script>
+</body>
+</html>

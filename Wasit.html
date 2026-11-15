@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel Petugas — Padel Cove</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d3a9e">
+<style>
+:root{--navy:#0a2a7a;--lime:#c5f544;--limed:#5c8a00;--card:rgba(8,32,100,.55);--tx:#fff;--mu:#b8cdf5;--ac:var(--lime);--ac2:rgba(197,245,68,.18);--bd:rgba(255,255,255,.16);--lv:#ff5a5f;--fh:'Unbounded','Arial Black',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(180deg,#2f78ea 0,#1448b8 40%,#0b2b84 100%) fixed;min-height:100vh;padding-top:env(safe-area-inset-top)}
+header{padding:16px 16px 6px;max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.pill{border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 14px;font:800 11px var(--fh);letter-spacing:.12em;background:rgba(255,255,255,.08)}
+.tag{display:inline-block;background:var(--lime);color:var(--navy);border-radius:8px;padding:5px 12px;font:800 10px var(--fh);letter-spacing:.14em}
+h1{margin:10px 0 4px;font:900 clamp(36px,10vw,56px)/.95 var(--fh);font-style:italic;text-transform:uppercase;text-shadow:0 4px 0 var(--navy)}
+h1 em{display:block;color:var(--lime);text-shadow:0 4px 0 var(--limed)}
+header small{color:var(--mu)}
+main{max-width:760px;margin:0 auto;padding:14px 12px}
+h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin:20px 0 10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:12px 14px;margin-bottom:10px;backdrop-filter:blur(4px)}
+.card.live{border:2px solid var(--lime);box-shadow:0 0 0 3px rgba(197,245,68,.2)}
+.meta{display:flex;justify-content:space-between;gap:8px;color:var(--mu);font-size:11px;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+.row{display:flex;justify-content:space-between;padding:3px 0;font-weight:600}.row b{font:800 20px var(--fh);min-width:26px;text-align:right}
+.row.win{color:var(--lime)}
+.badge{background:var(--lv);color:#fff;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
+input,select{width:100%;padding:12px 16px;border:0;border-radius:999px;background:#fff;color:var(--navy);font:600 15px system-ui;margin-bottom:12px}
+.mu{color:var(--mu)}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:999px;background:var(--lime);color:var(--navy);font:800 12px var(--fh);letter-spacing:.08em;text-transform:uppercase;margin-top:10px;cursor:pointer;box-shadow:0 4px 0 var(--limed)}
+.btn.g{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}.btn.r{background:var(--lv);color:#fff;box-shadow:none}
+.tm{display:grid;grid-template-columns:1fr auto auto;gap:6px 12px;align-items:center;padding:10px 0;border-top:1px solid var(--bd)}
+.tm .nm{grid-column:1/-1;font-weight:700}.gm{text-align:center}.gm small{display:block;color:var(--mu);font-size:10px;letter-spacing:.1em}.gm b{font:900 34px var(--fh)}.gm b.p{color:var(--lime)}
+.pb{grid-column:1/-1;padding:16px;border:0;border-radius:16px;background:var(--lime);color:var(--navy);font:900 16px var(--fh);box-shadow:0 4px 0 var(--limed);cursor:pointer;transition:transform 0.1s}.pb:active{transform:scale(0.98)}.pb:disabled{opacity:.4;pointer-events:none}
+.bg{display:flex;flex-wrap:wrap;gap:8px}.bg .btn{width:auto;flex:1;min-width:70px;margin-top:0}
+.sl{padding:10px 0;border-top:1px solid var(--bd)}.sl select{margin:8px 0 0}.ok{color:var(--lime)}.wr{color:orange}
+.lab{font:800 12px var(--fh);letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:4px 0 10px}.lab.hot{color:var(--lime)}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><span class="pill">20 — 22 NOV 2026</span><a href="#" id="logoutBtn" style="display:none;color:var(--lime);text-decoration:none;font-weight:bold;font-size:12px">Keluar</a></div>
+<span class="tag">PANEL PETUGAS</span>
+<h1>Court<em>Control</em></h1>
+<small id="upd">Silakan masuk dengan PIN Anda</small>
+</header>
+<main id="view">
+  <div id="loading" class="mu" style="text-align:center;margin-top:40px">Memuat...</div>
+</main>
+<script>
+// ====== KONFIGURASI SUPABASE ======
+const SUPA_URL = 'https://toyfsmqgqmwxezcaxbhd.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRveWZzbXFncW13eGV6Y2F4YmhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDk5MjUsImV4cCI6MjEwOTk4NTkyNX0.Qcq-Ld9VUcOcGUxnagMlPiywAlgxB2-53O2n0ljzzNk'; // Gunakan kunci eyJ...
+const HEADERS = {
+  'apikey': SUPA_KEY,
+  'Authorization': 'Bearer ' + SUPA_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+};
+// ==================================
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// Header khusus GET (tanpa Prefer / Content-Type)
+const GET_HEADERS = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
+
+let SESSION = JSON.parse(localStorage.getItem('cove_staff')) || null;
+let MATCHES = [];
+let PAIRS = {};
+let activeMatch = null;
+let activeState = null;
+let pollTimer = null;
+// ID unik untuk SETIAP aksi wasit (mulai/poin/undo/konfirmasi).
+// F4 menolak ID yang sudah pernah dipakai sebagai "kiriman ganda", jadi ID tidak boleh dipakai ulang.
+// crypto.randomUUID hanya ada di https/localhost; cadangan getRandomValues untuk http lain (mis. IP LAN).
+function newId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+  const h = [...b].map(x => x.toString(16).padStart(2, '0')).join('');
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
+let isProcessing = false;  // sedang kirim poin/undo/konfirmasi
+let pickBusy = false;      // sedang membuka laga
+let actionVersion = 0;     // naik setiap aksi wasit; dipakai agar polling lama tidak menimpa state baru
+let renderedKey = null;    // penanda layar skor yang sedang tampil
+let MANUAL = null;         // form input hasil manual Admin/FMD: { q, kode, busy, pesan }
+let BAGAN = null;          // panel bagan gugur Admin/FMD: { kat, data, busy, pesan }
+
+// ---------- Jaringan ----------
+// Semua request punya timeout + tanpa cache. Sebelumnya fetch yang "menggantung"
+// (sinyal lemah) tidak pernah selesai, sehingga isProcessing tetap true dan semua klik berikutnya diabaikan.
+async function req(url, opts = {}, ms = 12000) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const res = await fetch(url, { ...opts, signal: ctl.signal, cache: 'no-store' });
+    const text = await res.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch (_) {}
+    return { ok: res.ok, status: res.status, data, text };
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function rpc(fn, args) {
+  try {
+    const r = await req(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
+      method: 'POST', headers: HEADERS, body: JSON.stringify(args)
+    });
+    if (!r.ok) {
+      console.error(fn, r.status, r.text);
+      const msg = r.data && (r.data.message || r.data.error);
+      return { ok: false, error: msg || `Server menolak permintaan (${r.status}).` };
+    }
+    if (r.data && typeof r.data === 'object') return r.data;
+    return { ok: false, error: 'Respons server tidak dikenali.' };
+  } catch (err) {
+    console.error(fn, err);
+    // network:true = hasil di server TIDAK diketahui (bisa sudah tersimpan)
+    return { ok: false, network: true, error: 'Koneksi lambat atau terputus.' };
+  }
+}
+
+async function fetchMatches() {
+  // Ambil SEMUA laga yang belum selesai (termasuk hasil sinkronisasi 'scheduled')
+ let url = `${SUPA_URL}/rest/v1/matches?select=code,category_code,match_type,round_code,pair1_code,pair2_code,pair1_source,pair2_source,status,assigned_court,planned_court,assigned_referee&status=not.in.(finished,cancelled,walkover,retired)&order=code.asc`;
+  try {
+    const [resM, resP] = await Promise.all([
+      req(url, { headers: GET_HEADERS }),
+      req(`${SUPA_URL}/rest/v1/pairs?select=code,player1,player2`, { headers: GET_HEADERS })
+    ]);
+    
+    if (!resM.ok || !Array.isArray(resM.data)) return console.error('Fetch error', resM.text);
+    
+    MATCHES = resM.data;
+    const pairsData = (resP.ok && Array.isArray(resP.data)) ? resP.data : null;
+    
+    if (pairsData) PAIRS = {};
+    (pairsData || []).forEach(p => {
+      PAIRS[p.code] = `${p.player1} / ${p.player2}`;
+    });
+  } catch (err) {
+    console.error('fetchMatches', err);
+  }
+}
+// Mengembalikan baris state, atau null jika gagal. Tidak pernah melempar error.
+async function fetchState(matchCode) {
+  try {
+    const r = await req(`${SUPA_URL}/rest/v1/match_state?match_code=eq.${encodeURIComponent(matchCode)}`, { headers: GET_HEADERS });
+    if (r.ok && Array.isArray(r.data)) return r.data[0] || null;
+    console.error('fetchState', r.status, r.text);
+  } catch (e) {
+    console.error('fetchState', e);
+  }
+  return null;
+}
+
+// Ambil state terbaru; JANGAN menimpa state lama dengan null kalau fetch gagal.
+async function syncState(m) {
+  const s = await fetchState(m.code);
+  if (s && activeMatch === m) activeState = s;
+  return s;
+}
+
+// Sinkronkan status laga (mis. live -> awaiting_confirmation) tanpa perlu reload
+async function syncMatchRow(m) {
+  try {
+    const r = await req(`${SUPA_URL}/rest/v1/matches?select=status,assigned_referee,assigned_court&code=eq.${encodeURIComponent(m.code)}`, { headers: GET_HEADERS });
+    if (r.ok && Array.isArray(r.data) && r.data[0]) Object.assign(m, r.data[0]);
+  } catch (e) {
+    console.error('syncMatchRow', e);
+  }
+}
+
+function getPin(msg) {
+  let pin = sessionStorage.getItem('cove_pin');
+  if (!pin) {
+    pin = prompt(msg || 'Masukkan PIN Anda:');
+    if (!pin) return null;
+    sessionStorage.setItem('cove_pin', pin);
+  }
+  return pin;
+}
+
+function pinSalah(res) {
+  if (res && /pin/i.test(res.error || '')) sessionStorage.removeItem('cove_pin');
+}
+
+// Wasit memilih laga sendiri (penugasan offline): klaim + lapangan -> status 'ready'
+async function pilihLaga(m) {
+  const n1 = namaPair(m.pair1_code), n2 = namaPair(m.pair2_code);
+  const usul = m.assigned_court || m.planned_court || '';
+  const jawab = prompt(`Wasiti laga ini?\n${n1}\nvs\n${n2}\n\nMain di lapangan nomor:`, usul);
+  if (jawab === null) return false;
+  const lap = parseInt(String(jawab).trim(), 10);
+  if (!(lap > 0)) { alert('Nomor lapangan tidak valid.'); return false; }
+
+  const pin = getPin('Masukkan PIN Anda:');
+  if (!pin) return false;
+  const res = await rpc('wasit_pilih_laga', { p_pin: pin, p_match: m.code, p_court: lap });
+  if (!(res && res.ok)) {
+    pinSalah(res);
+    alert(res ? res.error : 'Gagal memilih laga.');
+    return false;
+  }
+  m.assigned_referee = SESSION.kode;
+  m.assigned_court = res.lapangan;
+  m.status = 'ready';
+  return true;
+}
+
+window.lepasLaga = async (ev, code) => {
+  ev.stopPropagation();
+  if (pickBusy) return;
+  if (!confirm('Lepas laga ini supaya bisa dipilih wasit lain?')) return;
+  const pin = getPin();
+  if (!pin) return;
+  pickBusy = true;
+  try {
+    const res = await rpc('wasit_lepas_laga', { p_pin: pin, p_match: code });
+    if (!(res && res.ok)) { pinSalah(res); alert(res ? res.error : 'Gagal melepas laga.'); }
+    await refreshData();
+  } finally {
+    pickBusy = false;
+  }
+  render();
+};
+
+// ---------- Label bagan ----------
+// G:A:1 -> Juara Grup A, G:C:2 -> Runner-up Grup C, W:BW-QF1 -> Pemenang QF1, L:BW-SF1 -> Kalah SF1
+function labelSumber(src) {
+  if (!src) return 'TBD';
+  let x = /^G:([A-P]):(\d+)$/.exec(src);
+  if (x) return (x[2] === '1' ? 'Juara' : x[2] === '2' ? 'Runner-up' : 'Peringkat ' + x[2]) + ' Grup ' + x[1];
+  x = /^([WL]):[A-Z]+-(.+)$/.exec(src);
+  if (x) return (x[1] === 'W' ? 'Pemenang ' : 'Kalah ') + x[2];
+  return src;
+}
+const namaPair = c => PAIRS[c] || c;
+const isPengelola = () => SESSION && (SESSION.peran === 'admin' || SESSION.peran === 'fmd');
+
+// ---------- Tampilan ----------
+function render() {
+  if (!SESSION) return renderLogin();
+
+  $('#logoutBtn').style.display = 'block';
+  $('#upd').textContent = `Masuk sebagai ${SESSION.nama} (${SESSION.peran.toUpperCase()})`;
+
+  if (activeMatch) renderScoring();
+  else if (BAGAN) renderBagan();
+  else if (MANUAL) renderManual();
+  else renderDashboard();
+}
+
+function renderLogin() {
+  renderedKey = null;
+  $('#logoutBtn').style.display = 'none';
+  $('#upd').textContent = 'Silakan masuk dengan PIN Anda';
+  $('#view').innerHTML = `
+    <div class="card">
+      <h2>Login Petugas</h2>
+      <input id="inpPin" type="password" placeholder="PIN 6 Digit" maxlength="6" inputmode="numeric" autocomplete="off" style="text-align:center;font-size:24px;letter-spacing:8px">
+      <button class="btn" id="btnLogin">Masuk</button>
+      <p class="mu" id="loginErr" style="text-align:center;color:var(--lv)"></p>
+    </div>`;
+  $('#btnLogin').onclick = doLogin;
+}
+
+async function doLogin() {
+  const pin = $('#inpPin').value;
+  if (!/^\d{6}$/.test(pin)) return $('#loginErr').textContent = 'PIN harus 6 angka.';
+  $('#btnLogin').textContent = 'Memeriksa...';
+  const res = await rpc('staf_login', { p_pin: pin });
+  if (res && res.ok) {
+    SESSION = { kode: res.kode, nama: res.nama, peran: res.peran };
+    localStorage.setItem('cove_staff', JSON.stringify(SESSION));
+    sessionStorage.setItem('cove_pin', pin);
+    await refreshData();
+    render();
+  } else {
+    $('#loginErr').textContent = res ? res.error : 'Gagal login.';
+    $('#btnLogin').textContent = 'Masuk';
+  }
+}
+
+// Hanya memuat daftar laga (state skor ditangani terpisah oleh syncState)
+async function refreshData() {
+  if (!SESSION) return;
+  await fetchMatches();
+}
+
+function renderDashboard() {
+  renderedKey = null;
+  let html = '';
+
+  if (isPengelola()) {
+    const kats = [...new Set(MATCHES.filter(m => /^G:/.test(m.pair1_source || '') || /^G:/.test(m.pair2_source || ''))
+                                    .map(m => m.category_code))].sort();
+    html += `<div class="card"><h2 style="margin-top:4px">Menu Admin / FMD</h2>
+      <p class="mu" style="margin:0 0 10px">Hasil dari score sheet kertas diketik di sini, langsung masuk klasemen.</p>
+      <button class="btn" onclick="bukaManual()" style="margin-top:0">Input Hasil Manual</button>`;
+    if (kats.length) {
+      html += `<h2>Bagan Gugur</h2>
+        <p class="mu" style="margin:0 0 10px">Isi perempat final dari klasemen grup (setelah semua laga grup kategori selesai).</p>
+        <div class="bg">${kats.map(k => `<button class="btn g" onclick="bukaBagan('${esc(k)}')">${esc(k)}</button>`).join('')}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<h2>Daftar Laga Anda / Tersedia</h2>`;
+
+  // Laga gugur yang pasangannya belum ditentukan tidak bisa dimulai, jadi disembunyikan dari daftar wasit
+  const playable = MATCHES.filter(m => m.pair1_code && m.pair2_code);
+  const menunggu = MATCHES.length - playable.length;
+
+  if (!playable.length) {
+    html += `<p class="mu">Tidak ada laga yang siap dimainkan atau berjalan.</p>`;
+  } else {
+    html += playable.map(m => {
+      const isMine = m.assigned_referee === SESSION.kode;
+      const isNoRef = !m.assigned_referee;
+      const belumMulai = m.status === 'scheduled' || m.status === 'ready';
+      const lbl = isMine ? (belumMulai ? 'PILIHAN ANDA' : 'SEDANG ANDA WASITI')
+                         : (isNoRef ? 'SIAP DIWASITI' : 'DIPEGANG WASIT LAIN');
+      const lap = m.assigned_court ? 'Lapangan ' + m.assigned_court
+                : (m.planned_court ? 'Rencana lapangan ' + m.planned_court : 'Lapangan: -');
+      const bisaLepas = belumMulai && m.assigned_referee && (isMine || isPengelola());
+      const nama1 = PAIRS[m.pair1_code] || m.pair1_code;
+      const nama2 = PAIRS[m.pair2_code] || m.pair2_code;
+
+      return `
+      <div class="card ${(m.status === 'live' || m.status === 'awaiting_confirmation') ? 'live' : ''}" style="cursor:pointer" onclick="pickMatch('${esc(m.code)}')">
+        <div class="meta">
+          <span>${esc(m.category_code)} · ${esc(m.round_code)}</span>
+          <span style="color:${isNoRef ? 'orange' : (isMine ? 'var(--lime)' : 'gray')}">${lbl}</span>
+        </div>
+        <div class="row"><span>${esc(nama1)}</span></div>
+        <div class="row"><span>${esc(nama2)}</span></div>
+        <div class="meta" style="margin-top:8px; margin-bottom:0"><span>${esc(lap)}</span>${bisaLepas
+          ? `<a href="#" onclick="lepasLaga(event, '${esc(m.code)}')" style="color:var(--lv);text-decoration:none">LEPAS</a>` : ''}</div>
+      </div>`;
+    }).join('');
+  }
+  if (menunggu) html += `<p class="mu" style="text-align:center">${menunggu} laga gugur menunggu hasil babak sebelumnya.</p>`;
+  $('#view').innerHTML = html;
+}
+
+// ---------- Input Hasil Manual (score sheet kertas, Admin/FMD) ----------
+window.bukaManual = () => { MANUAL = { q: '', kode: null, busy: false, pesan: '' }; render(); };
+window.tutupManual = () => { MANUAL = null; refreshData().then(render); };
+window.pilihManual = (code) => { if (!MANUAL) return; MANUAL.kode = code; MANUAL.pesan = ''; render(); };
+window.batalManual = () => { if (!MANUAL) return; MANUAL.kode = null; render(); };
+
+function manualKandidat() {
+  const q = (MANUAL.q || '').trim().toLowerCase();
+  return MATCHES
+    .filter(m => m.pair1_code && m.pair2_code && (m.status === 'scheduled' || m.status === 'ready'))
+    .filter(m => !q || (m.code + ' ' + namaPair(m.pair1_code) + ' ' + namaPair(m.pair2_code)).toLowerCase().includes(q));
+}
+
+function renderManualList() {
+  const box = $('#mlist');
+  if (!box || !MANUAL) return;
+  const l = manualKandidat();
+  if (!l.length) { box.innerHTML = '<p class="mu">Tidak ada laga yang cocok (atau semua sudah punya hasil).</p>'; return; }
+  box.innerHTML = l.slice(0, 30).map(m => `
+    <div class="card" style="cursor:pointer;margin-bottom:8px" onclick="pilihManual('${esc(m.code)}')">
+      <div class="meta"><span>${esc(m.category_code)} · ${esc(m.round_code)}</span><span>${esc(m.code)}</span></div>
+      <div class="row"><span>${esc(namaPair(m.pair1_code))}</span></div>
+      <div class="row"><span>${esc(namaPair(m.pair2_code))}</span></div>
+      ${m.assigned_referee ? `<div class="meta" style="margin:6px 0 0"><span class="wr">Sudah dipilih ${esc(m.assigned_referee)} di web</span></div>` : ''}
+    </div>`).join('') + (l.length > 30 ? `<p class="mu">${l.length - 30} laga lain. Persempit pencarian.</p>` : '');
+}
+
+function renderManual() {
+  if (!MANUAL) return;
+  const m = MANUAL.kode && MATCHES.find(x => x.code === MANUAL.kode);
+  let html = `<button class="btn g" onclick="tutupManual()" style="margin-bottom:10px">&larr; Kembali ke Daftar</button>`;
+
+  if (!m) {
+    MANUAL.kode = null;
+    html += `<div class="card"><h2 style="margin-top:4px">Input Hasil Manual</h2>
+      <p class="mu" style="margin:0 0 10px">Pilih laga yang diwasiti dengan score sheet kertas.</p>
+      ${MANUAL.pesan ? `<p class="ok" style="margin:0 0 10px">${esc(MANUAL.pesan)}</p>` : ''}
+      <input id="mq" type="search" placeholder="Cari nama pemain atau kode laga" value="${esc(MANUAL.q)}" autocomplete="off">
+      <div id="mlist"></div></div>`;
+    $('#view').innerHTML = html;
+    $('#mq').oninput = e => { MANUAL.q = e.target.value; renderManualList(); };
+    renderManualList();
+    return;
+  }
+
+  const lbl = 'class="mu" style="display:block;margin:4px 0 6px;font-size:13px"';
+  const n1 = namaPair(m.pair1_code), n2 = namaPair(m.pair2_code);
+  html += `<div class="card"><h2 style="margin-top:4px">Input Hasil Manual</h2>
+    <div class="meta"><span>${esc(m.category_code)} · ${esc(m.round_code)}</span><span>${esc(m.code)}</span></div>
+    <label ${lbl}>Game — ${esc(n1)}</label>
+    <input id="mg1" type="number" inputmode="numeric" min="0" max="9" style="text-align:center;font-size:22px">
+    <label ${lbl}>Game — ${esc(n2)}</label>
+    <input id="mg2" type="number" inputmode="numeric" min="0" max="9" style="text-align:center;font-size:22px">
+    ${m.match_type !== 'group' ? `
+      <label ${lbl}>Tiebreak (isi hanya jika berakhir 7-6; selain itu kosongkan)</label>
+      <div style="display:flex;gap:8px">
+        <input id="mt1" type="number" inputmode="numeric" min="0" max="30" placeholder="TB tim 1" style="text-align:center">
+        <input id="mt2" type="number" inputmode="numeric" min="0" max="30" placeholder="TB tim 2" style="text-align:center">
+      </div>` : ''}
+    <label ${lbl}>Catatan (opsional, mis. nama wasit kertas)</label>
+    <input id="mcat" type="text" maxlength="120" autocomplete="off">
+    <p id="mmsg" class="mu" style="text-align:center;min-height:20px"></p>
+    <button class="btn" id="msave" onclick="simpanManual()">Simpan Hasil</button>
+    <button class="btn g" onclick="batalManual()">Pilih Laga Lain</button></div>`;
+  $('#view').innerHTML = html;
+}
+
+window.simpanManual = async () => {
+  if (!MANUAL || MANUAL.busy) return;
+  const m = MATCHES.find(x => x.code === MANUAL.kode);
+  if (!m) return;
+  const num = id => { const el = $('#' + id); if (!el) return null; const v = el.value.trim(); return v === '' ? null : Number(v); };
+  const msg = (t, err) => { const e = $('#mmsg'); if (e) { e.textContent = t; e.style.color = err ? 'var(--lv)' : ''; } };
+  const g1 = num('mg1'), g2 = num('mg2'), t1 = num('mt1'), t2 = num('mt2');
+  if (!Number.isInteger(g1) || !Number.isInteger(g2)) return msg('Isi skor game kedua pasangan.', true);
+  if ((t1 === null) !== (t2 === null)) return msg('Isi skor tiebreak keduanya, atau kosongkan keduanya.', true);
+
+  const n1 = namaPair(m.pair1_code), n2 = namaPair(m.pair2_code);
+  if (!confirm(`Simpan hasil ${m.code}?\n\n${n1}  ${g1}\n${n2}  ${g2}` + (t1 !== null ? `\n(Tiebreak ${t1}-${t2})` : ''))) return;
+  const pin = getPin();
+  if (!pin) return;
+
+  MANUAL.busy = true;
+  const btn = $('#msave'); if (btn) btn.disabled = true;
+  msg('Menyimpan...');
+  let berhasil = false;
+  try {
+    const res = await rpc('admin_input_hasil', {
+      p_pin: pin, p_match: m.code, p_g1: g1, p_g2: g2, p_tb1: t1, p_tb2: t2,
+      p_catatan: (($('#mcat') || {}).value || '').trim() || null, p_client: newId()
+    });
+    if (!res.ok) {
+      pinSalah(res);
+      msg(res.network ? 'Koneksi bermasalah. Cek daftar dulu: jika laga sudah hilang dari daftar, hasilnya sudah tersimpan.'
+                      : (res.error || 'Gagal menyimpan.'), true);
+      return;
+    }
+    berhasil = true;
+    MANUAL.pesan = `Tersimpan: ${m.code}  ${g1}-${g2}${t1 !== null ? ` (TB ${t1}-${t2})` : ''}.`;
+    MANUAL.kode = null;
+    await refreshData();
+  } finally {
+    if (MANUAL) MANUAL.busy = false;
+    const b = $('#msave'); if (b) b.disabled = false;
+  }
+  if (berhasil) render();
+};
+
+// ---------- Panel Bagan Gugur (Admin/FMD) ----------
+const KEADAAN = {
+  ok: ['SIAP DIISI', 'wr'], seri: ['SERI — PILIH MANUAL', 'wr'],
+  kosong: ['TIDAK ADA KANDIDAT', 'wr'], sudah_mulai: ['SUDAH DIMULAI', 'mu']
+};
+
+window.bukaBagan = async (kat) => {
+  BAGAN = { kat, data: null, busy: true, pesan: '' };
+  render();
+  await muatBagan();
+};
+
+window.tutupBagan = () => {
+  BAGAN = null;
+  refreshData().then(render);
+};
+
+async function muatBagan(pesan) {
+  if (!BAGAN) return;
+  const pin = getPin();
+  if (!pin) { BAGAN = null; return render(); }
+  BAGAN.busy = true; renderBagan();
+  const res = await rpc('bagan_isi', { p_pin: pin, p_category: BAGAN.kat, p_terapkan: false });
+  if (!BAGAN) return;
+  pinSalah(res);
+  BAGAN.data = res; BAGAN.busy = false; BAGAN.pesan = pesan || '';
+  renderBagan();
+}
+
+window.terapkanBagan = async () => {
+  if (!BAGAN || BAGAN.busy) return;
+  if (!confirm(`Isi perempat final ${BAGAN.kat} dari klasemen sekarang?`)) return;
+  const pin = getPin();
+  if (!pin) return;
+  BAGAN.busy = true; renderBagan();
+  const res = await rpc('bagan_isi', { p_pin: pin, p_category: BAGAN.kat, p_terapkan: true });
+  if (!BAGAN) return;
+  pinSalah(res);
+  BAGAN.data = res; BAGAN.busy = false;
+  BAGAN.pesan = res.ok ? `Tersimpan: ${res.laga_diubah} laga diperbarui.` +
+    (res.perlu_dipilih > 0 ? ` ${res.perlu_dipilih} slot seri masih perlu dipilih manual.` : '') : '';
+  await refreshData();
+  renderBagan();
+};
+
+window.pilihBagan = async (laga, slot, selId) => {
+  if (!BAGAN || BAGAN.busy) return;
+  const val = $('#' + selId).value || null;
+  const pin = getPin();
+  if (!pin) return;
+  BAGAN.busy = true; renderBagan();
+  const res = await rpc('bagan_pilih', { p_pin: pin, p_match: laga, p_slot: slot, p_pair: val });
+  if (!BAGAN) return;
+  pinSalah(res);
+  if (!res.ok) { BAGAN.busy = false; BAGAN.pesan = ''; renderBagan(); return alert(res.error || 'Gagal menyimpan pilihan.'); }
+  await refreshData();
+  await muatBagan('Pilihan disimpan.');
+};
+
+function renderBagan() {
+  if (!BAGAN) return;
+  const { kat, data, busy, pesan } = BAGAN;
+  let html = `<button class="btn g" onclick="tutupBagan()" style="margin-bottom:10px">&larr; Kembali ke Daftar</button>
+    <div class="card"><h2 style="margin-top:4px">Bagan Gugur · ${esc(kat)}</h2>`;
+
+  if (!data) {
+    html += `<p class="mu">Memuat pratinjau...</p>`;
+  } else if (!data.ok) {
+    html += `<p style="color:var(--lv)">${esc(data.error || 'Gagal memuat bagan.')}</p>
+      <button class="btn g" onclick="muatBagan()" ${busy ? 'disabled' : ''}>Muat Ulang</button>`;
+  } else {
+    let i = 0;
+    html += data.slot.map(sl => {
+      const [lbl, cls] = KEADAAN[sl.keadaan] || [sl.keadaan, 'mu'];
+      const laga = sl.laga.replace(/^[A-Z]+-/, '');
+      const sudahSama = sl.keadaan === 'ok' && sl.sekarang === sl.usulan;
+      let isi;
+      if (sl.keadaan === 'ok') {
+        isi = `<b>${esc(namaPair(sl.usulan))}</b>` +
+          (sl.sekarang && !sudahSama ? `<br><small class="mu">Saat ini: ${esc(namaPair(sl.sekarang))}</small>` : '');
+      } else if (sl.keadaan === 'seri') {
+        const id = 'sel' + (i++);
+        isi = `<small class="mu">Peringkat seri. Pilih pasangan yang lolos sesuai keputusan panitia:</small>
+          <select id="${id}"><option value="">— kosongkan —</option>${sl.kandidat.map(k =>
+            `<option value="${esc(k.kode)}" ${k.kode === sl.sekarang ? 'selected' : ''}>${esc(k.nama)}</option>`).join('')}</select>
+          <button class="btn g" style="margin-top:0" onclick="pilihBagan('${esc(sl.laga)}', ${sl.slot}, '${id}')" ${busy ? 'disabled' : ''}>Simpan Pilihan</button>`;
+      } else if (sl.keadaan === 'kosong') {
+        isi = `<span class="mu">Tidak ada pasangan aktif di posisi ini.</span>`;
+      } else {
+        isi = `<b>${esc(sl.sekarang ? namaPair(sl.sekarang) : '-')}</b>`;
+      }
+      return `<div class="sl"><div class="meta" style="margin-bottom:4px">
+          <span>${esc(laga)} · ${esc(labelSumber(sl.sumber))}</span>
+          <span class="${sudahSama ? 'ok' : cls}">${sudahSama ? 'TERISI' : lbl}</span></div>${isi}</div>`;
+    }).join('');
+    html += `<p class="mu" id="bagan-msg" style="text-align:center;margin-top:12px">${esc(busy ? 'Memproses...' : pesan)}</p>
+      <button class="btn" onclick="terapkanBagan()" ${busy ? 'disabled' : ''}>Isi Perempat Final dari Klasemen</button>
+      <button class="btn g" onclick="muatBagan()" ${busy ? 'disabled' : ''}>Muat Ulang Pratinjau</button>`;
+  }
+  html += `</div>`;
+  $('#view').innerHTML = html;
+}
+
+window.pickMatch = async (code) => {
+  if (pickBusy) return;                       // cegah tap ganda pada kartu
+  const m = MATCHES.find(x => x.code === code);
+  if (!m) return;
+
+  // 1. Laga dipegang wasit lain: wasit biasa ditolak, Admin/FMD boleh mengambil alih
+  const milikLain = m.assigned_referee && m.assigned_referee !== SESSION.kode;
+  if (milikLain && !isPengelola()) {
+    alert('Laga ini sudah dipilih wasit lain (' + m.assigned_referee + ').');
+    return;
+  }
+  if (milikLain && (m.status === 'scheduled' || m.status === 'ready')
+      && !confirm('Laga ini dipilih ' + m.assigned_referee + '. Ambil alih?')) return;
+
+  pickBusy = true;
+  activeMatch = m;
+  try {
+    // 2. Belum dimulai: wasit memilih laga + lapangan, lalu laga dimulai
+    if (m.status === 'scheduled' || m.status === 'ready') {
+      const sudahSiap = m.status === 'ready' && m.assigned_referee === SESSION.kode && m.assigned_court;
+      if (!sudahSiap) {
+        const ok = await pilihLaga(m);
+        if (!ok) { activeMatch = null; await refreshData(); render(); return; }
+      } else if (!confirm(`Mulai laga ini sekarang di Lapangan ${m.assigned_court}?`)) {
+        activeMatch = null; return;
+      }
+
+      const pin = getPin('Masukkan PIN Anda untuk memulai laga:');
+      if (!pin) { activeMatch = null; return; }
+      const res = await rpc('wasit_mulai', { p_pin: pin, p_match: code, p_client: newId() });
+      if (!(res && res.ok)) {
+        pinSalah(res);
+        alert((res ? res.error : 'Gagal memulai laga.') +
+              '\n\nLaga tetap tercatat sebagai pilihan Anda. Tekan lagi untuk mencoba, atau LEPAS jika batal.');
+        activeMatch = null;
+        await refreshData();
+        render();
+        return;
+      }
+      m.status = 'live';
+    }
+
+    // 3. Ambil state lalu tampilkan layar skor
+    const st = await fetchState(code);
+    if (!st) {
+      alert('Gagal memuat data skor laga ini. Periksa koneksi lalu coba lagi.');
+      activeMatch = null;
+      return;
+    }
+    activeState = st;
+    actionVersion++;
+    renderedKey = null;
+    render();
+    startPolling();
+  } finally {
+    pickBusy = false;
+  }
+};
+
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(async () => {
+    const m = activeMatch;
+    if (!m || isProcessing) return;
+    const v = actionVersion;
+    const [st] = await Promise.all([fetchState(m.code), syncMatchRow(m)]);
+    // Buang hasil polling kalau wasit sudah menekan sesuatu / pindah layar saat fetch berjalan
+    if (activeMatch !== m || isProcessing || v !== actionVersion) return;
+    if (st) activeState = st;
+    renderScoring(true);
+  }, 10000);
+}
+
+function stopPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+}
+
+function psDefault() {
+  const s = activeMatch && activeMatch.status;
+  return (s === 'awaiting_confirmation' || s === 'finished') ? 'Laga Selesai.' : 'Tekan tombol poin.';
+}
+
+function flash(msg, isErr) {
+  const el = $('#ps');
+  if (!el) return;
+  el.textContent = msg || psDefault();
+  el.style.color = isErr ? 'var(--lv)' : '';
+}
+
+function renderScoring(silent = false) {
+  if (!activeMatch) return;
+  if (!activeState) {
+    $('#view').innerHTML = `<p class="mu" style="text-align:center;margin-top:20px">Memuat state skor...</p>`;
+    return;
+  }
+
+  const st = activeState;
+  const m = activeMatch;
+  const isFinished = m.status === 'awaiting_confirmation' || m.status === 'finished';
+  const dis = isFinished || isProcessing;
+  const label = st.in_tiebreak ? 'TIEBREAK' :
+                st.point_kind === 'golden_point' ? 'GOLDEN POINT' :
+                st.point_kind === 'star_point' ? 'STAR POINT' :
+                st.point_kind === 'deuce' ? 'DEUCE' :
+                st.point_kind === 'advantage' ? 'ADVANTAGE' :
+                `GAME KE-${st.games1 + st.games2 + 1}`;
+
+  const nama1 = m.pair1_code ? namaPair(m.pair1_code) : labelSumber(m.pair1_source);
+  const nama2 = m.pair2_code ? namaPair(m.pair2_code) : labelSumber(m.pair2_source);
+  const key = m.code + '|' + m.status;
+
+  // Update ringan hanya kalau layar yang sama masih tampil dan status laga tidak berubah.
+  // Kalau status berubah (mis. laga selesai -> tombol Konfirmasi muncul), gambar ulang penuh.
+  if (silent && key === renderedKey && $('#skor-g1')) {
+    $('#skor-g1').textContent = st.games1;
+    $('#skor-g2').textContent = st.games2;
+    $('#poin-d1').textContent = st.display1;
+    $('#poin-d2').textContent = st.display2;
+    $('#label-poin').textContent = label;
+    document.querySelectorAll('.pb, #btnUndo').forEach(b => { b.disabled = dis; });
+    return;
+  }
+
+  renderedKey = key;
+  $('#view').innerHTML = `
+    <button class="btn g" onclick="kembali()" style="margin-bottom:10px">&larr; Kembali ke Daftar</button>
+    <div class="card">
+      <div class="meta"><span>${esc(m.category_code)} · ${esc(m.round_code)}</span><span>Lap ${esc(m.assigned_court || '-')}</span></div>
+      <p class="lab ${st.point_kind === 'golden_point' || st.point_kind === 'star_point' || st.in_tiebreak ? 'hot' : ''}" id="label-poin">${label}</p>
+
+      <div class="tm">
+        <div class="nm">${esc(nama1)}</div>
+        <div class="gm"><small>GAME</small><b id="skor-g1">${st.games1}</b></div>
+        <div class="gm"><small>POIN</small><b class="p" id="poin-d1">${esc(st.display1)}</b></div>
+      </div>
+      <button class="pb" onclick="poin(1)" ${dis ? 'disabled' : ''}>+ POIN TIM 1</button>
+
+      <div class="tm">
+        <div class="nm">${esc(nama2)}</div>
+        <div class="gm"><small>GAME</small><b id="skor-g2">${st.games2}</b></div>
+        <div class="gm"><small>POIN</small><b class="p" id="poin-d2">${esc(st.display2)}</b></div>
+      </div>
+      <button class="pb" onclick="poin(2)" ${dis ? 'disabled' : ''}>+ POIN TIM 2</button>
+
+      <p class="mu" id="ps" style="text-align:center;margin-top:10px">${psDefault()}</p>
+
+      <button class="btn g" id="btnUndo" onclick="undo()" ${dis ? 'disabled' : ''}>↶ Batalkan Poin Terakhir</button>
+
+      ${m.status === 'awaiting_confirmation' ? `
+        <button class="btn" onclick="konfirmasi()">✅ Konfirmasi Hasil &amp; Selesai</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+window.kembali = () => {
+  activeMatch = null;
+  activeState = null;
+  renderedKey = null;
+  actionVersion++;
+  stopPolling();
+  refreshData().then(render);
+};
+
+// ---------- Aksi skor (poin & undo) ----------
+async function aksiSkor(fn, extra) {
+  if (isProcessing) return;
+  const m = activeMatch;
+  if (!m) return;
+
+  const pin = getPin();
+  if (!pin) return;
+
+  isProcessing = true;
+  actionVersion++;
+  renderScoring(true); // nonaktifkan tombol sementara request berjalan
+  flash('Menyimpan...');
+
+  try {
+    if (!activeState) await syncState(m);
+    if (!activeState) { flash('Skor belum termuat. Coba lagi.', true); return; }
+
+    const idAksi = newId();  // satu ketukan = satu ID, termasuk saat diulang karena seq basi
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const sentSeq = activeState.seq;
+      const res = await rpc(fn, Object.assign({
+        p_pin: pin, p_match: m.code, p_seq: sentSeq, p_client: idAksi
+      }, extra));
+
+      if (res.ok) {
+        await syncState(m);
+        await syncMatchRow(m);
+        flash('');
+        return;
+      }
+
+      pinSalah(res);
+      await syncState(m);
+
+      // Hasil di server tidak diketahui -> JANGAN kirim ulang otomatis (risiko poin ganda)
+      if (res.network) {
+        flash('Koneksi bermasalah. Cek skor di layar dulu sebelum menekan lagi.', true);
+        return;
+      }
+      // Ditolak server karena state kita basi (seq sudah berubah) -> ulangi sekali dengan seq terbaru
+      if (attempt === 0 && activeState && activeState.seq !== sentSeq) continue;
+
+      flash(res.error || 'Gagal menyimpan.', true);
+      return;
+    }
+  } finally {
+    isProcessing = false;
+    actionVersion++;
+    renderScoring(true);
+  }
+}
+
+window.poin = (tim) => aksiSkor('wasit_poin', { p_tim: tim });
+window.undo = () => aksiSkor('wasit_undo', {});
+
+window.konfirmasi = async () => {
+  if (isProcessing) return;
+  const m = activeMatch;
+  if (!m) return;
+  const pin = getPin();
+  if (!pin) return;
+
+  isProcessing = true;
+  actionVersion++;
+  renderScoring(true);
+  try {
+    const res = await rpc('wasit_konfirmasi', { p_pin: pin, p_match: m.code, p_client: newId() });
+    if (res && res.ok) {
+      alert('Laga Selesai!');
+      kembali();
+    } else {
+      pinSalah(res);
+      flash(res ? res.error : 'Gagal konfirmasi', true);
+    }
+  } finally {
+    isProcessing = false;
+    actionVersion++;
+    renderScoring(true);
+  }
+};
+
+$('#logoutBtn').onclick = (e) => {
+  e.preventDefault();
+  SESSION = null;
+  localStorage.removeItem('cove_staff');
+  sessionStorage.removeItem('cove_pin');
+  activeMatch = null;
+  activeState = null;
+  renderedKey = null;
+  BAGAN = null;
+  MANUAL = null;
+  stopPolling();
+  render();
+};
+
+if (SESSION) {
+  refreshData().then(render);
+} else {
+  render();
+}
+
+// Refresh daftar laga saat di dashboard
+setInterval(() => {
+  if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL) {
+    refreshData().then(() => { if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL) render(); });
+  }
+}, 10000);
+</script>
+</body>
+</html>
