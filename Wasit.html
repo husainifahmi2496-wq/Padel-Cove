@@ -664,7 +664,7 @@ function renderScoring(silent = false) {
   const dis = isFinished || isProcessing;
   const label = st.in_tiebreak ? 'TIEBREAK' :
                 st.point_kind === 'golden_point' ? 'GOLDEN POINT' :
-                st.point_kind === 'star_point' ? 'STAR POINT' :
+                st.point_kind === 'star_point' ? 'GOLDEN POINT' :  // deuce 1x lalu poin penentu
                 st.point_kind === 'deuce' ? 'DEUCE' :
                 st.point_kind === 'advantage' ? 'ADVANTAGE' :
                 `GAME KE-${st.games1 + st.games2 + 1}`;
