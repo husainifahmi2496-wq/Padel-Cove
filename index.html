@@ -15,10 +15,9 @@ header{padding:16px 16px 6px;max-width:760px;margin:0 auto}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
 #logo{height:80px;max-width:150px;object-fit:contain}
 .pill{border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:6px 14px;font:800 11px var(--fh);letter-spacing:.12em;background:rgba(255,255,255,.08)}
-/* PERUBAHAN 3: Memperbesar ukuran tag judul turnamen */
 .tag{display:inline-block;background:var(--lime);color:var(--navy);border-radius:8px;padding:8px 16px;font:800 clamp(16px, 4.5vw, 24px) var(--fh);letter-spacing:.14em;line-height:1.2;margin-bottom:8px}
-h1{margin:10px 0 4px;font:900 clamp(40px,13vw,68px)/.95 var(--fh);font-style:italic;text-transform:uppercase;text-shadow:0 4px 0 var(--navy)}
-h1 em{display:block;color:var(--lime);text-shadow:0 4px 0 var(--limed)}
+h1{margin:10px 0 4px;font:900 clamp(20px, 6.5vw, 34px)/.95 var(--fh);font-style:italic;text-transform:uppercase;text-shadow:0 2px 0 var(--navy)}
+h1 em{display:block;color:var(--lime);text-shadow:0 2px 0 var(--limed)}
 header small{color:var(--mu)}
 .tape{overflow:hidden;white-space:nowrap;background:var(--lime);color:var(--navy);font:800 11px var(--fh);letter-spacing:.14em;padding:9px 0;transform:rotate(-1.6deg);margin:14px -8px 10px;box-shadow:0 3px 0 var(--navy)}
 .tape span{display:inline-block;padding-left:16px}
@@ -30,6 +29,7 @@ h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:va
 .card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:12px 14px;margin-bottom:10px;backdrop-filter:blur(4px)}
 .card.live{border:2px solid var(--lime);box-shadow:0 0 0 3px rgba(197,245,68,.2)}
 .meta{display:flex;justify-content:space-between;gap:8px;color:var(--mu);font-size:11px;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+.meta .jam{display:inline-block;background:rgba(197,245,68,.15);color:var(--lime);border-radius:6px;padding:2px 8px;font-weight:700;letter-spacing:.04em}
 .row{display:flex;justify-content:space-between;padding:3px 0;font-weight:600}.row b{font:800 20px var(--fh);min-width:26px;text-align:right}
 .row.win{color:var(--lime)}
 .badge{background:var(--lv);color:#fff;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
@@ -39,12 +39,35 @@ input,select{width:100%;padding:12px 16px;border:0;border-radius:999px;backgroun
 .mu{color:var(--mu)}
 .btn{display:block;width:100%;padding:14px;border:0;border-radius:999px;background:var(--lime);color:var(--navy);font:800 12px var(--fh);letter-spacing:.08em;text-transform:uppercase;margin-top:10px;cursor:pointer;box-shadow:0 4px 0 var(--limed)}
 a{color:var(--lime)}
-.spons{max-width:736px;margin:14px auto;padding:14px;text-align:center;background:#fff;border-radius:20px;color:var(--navy)}.spons small{font:800 10px var(--fh);letter-spacing:.14em;color:var(--navy)}
-.spons div{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;margin-top:10px}
-.spons img{height:46px;max-width:120px;object-fit:contain}.ph{width:100px;height:46px;border:1.5px dashed #b7c4e6;border-radius:10px;display:grid;place-items:center;color:#8a99c2;font-size:11px}
 footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18px + env(safe-area-inset-bottom))}
 .pt{background:var(--lime);color:var(--navy);border-radius:8px;padding:2px 8px;margin-left:8px;font:800 12px var(--fh);min-width:36px;text-align:center}
 .row{align-items:center}.row span:first-child{flex:1}
+
+/* ====== SPONSOR AUTO-SCROLL (MARQUEE) ====== */
+.spons{max-width:736px;margin:14px auto;padding:14px;text-align:center;background:#fff;border-radius:20px;color:var(--navy)}
+.spons small{font:800 10px var(--fh);letter-spacing:.14em;color:var(--navy)}
+.spons-scroll{position:relative;overflow:hidden;margin-top:10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.spons-track{display:flex;align-items:center;gap:32px;width:max-content;animation:sponsScroll 30s linear infinite}
+.spons-track img{height:46px;max-width:120px;object-fit:contain;flex:0 0 auto;display:block}
+/* Track digandakan 2x, geser setengah -> loop mulus */
+@keyframes sponsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* Berhenti saat hover */
+.spons-scroll:hover .spons-track{animation-play-state:paused}
+
+/* ====== MODE OVERLAY (Live Streaming) ====== */
+body.overlay-mode{background:transparent !important;padding-top:0}
+body.overlay-mode header,
+body.overlay-mode .tape,
+body.overlay-mode nav,
+body.overlay-mode footer,
+body.overlay-mode .spons{display:none !important}
+body.overlay-mode main{padding:6px;max-width:640px;margin:0}
+body.overlay-mode .card{background:rgba(4,18,60,.72);border:2px solid rgba(197,245,68,.8);box-shadow:0 4px 18px rgba(0,0,0,.5)}
+body.overlay-mode .card .meta,
+body.overlay-mode .card .row,
+body.overlay-mode .card .row span,
+body.overlay-mode .card .row b{text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8)}
+body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
 </style>
 </head>
 <body>
@@ -57,14 +80,55 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 <div class="tape"><span>LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦ LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦</span></div>
 <nav id="nav"></nav>
 <main id="view"></main>
-<section class="spons"><small>DIDUKUNG OLEH</small><div id="sp"><div class="ph">Sponsor</div><div class="ph">Sponsor</div><div class="ph">Sponsor</div></div></section>
+<section class="spons">
+  <small>DIDUKUNG OLEH</small>
+  <div class="spons-scroll">
+    <!-- 
+      AUTO-SCROLL SPONSOR:
+      - Cukup tambahkan/ubah <img> di dalam .spons-track.
+      - JANGAN menghapus duplikasi (aria-hidden="true") — itu untuk loop mulus.
+      - Untuk menambah sponsor: tambahkan <img> yang sama di BOTH grup (asli + duplikat).
+      - Atur kecepatan lewat CSS: .spons-track{animation:sponsScroll 30s ...}
+    -->
+    <div class="spons-track" id="sponsTrack">
+      <!-- ===== Grup asli ===== -->
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor1.png" alt="Sponsor 1" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor2.png" alt="Sponsor 2" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor3.png" alt="Sponsor 3" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor4.png" alt="Sponsor 4" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor5.png" alt="Sponsor 5" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor6.png" alt="Sponsor 6" onerror="this.style.opacity=.3">
+      <!-- ===== Grup duplikat (untuk loop) ===== -->
+      <span style="display:contents" aria-hidden="true">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor1.png" alt="" onerror="this.style.opacity=.3">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor2.png" alt="" onerror="this.style.opacity=.3">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor3.png" alt="" onerror="this.style.opacity=.3">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor4.png" alt="" onerror="this.style.opacity=.3">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor5.png" alt="" onerror="this.style.opacity=.3">
+        <!-- Ganti src dengan URL logo sponsor -->
+        <img src="sponsor6.png" alt="" onerror="this.style.opacity=.3">
+      </span>
+    </div>
+  </div>
+</section>
 <footer>Skor diperbarui otomatis dari server pusat.</footer>
 <!-- Supabase Realtime: skor live tanpa menunggu polling. Jika CDN gagal dimuat, halaman tetap jalan dengan polling 15 detik. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ====== KONFIGURASI SUPABASE ======
-const SUPA_URL = 'https://toyfsmqgqmwxezcaxbhd.supabase.co'; // Pastikan URL ini benar
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRveWZzbXFncW13eGV6Y2F4YmhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDk5MjUsImV4cCI6MjEwOTk4NTkyNX0.Qcq-Ld9VUcOcGUxnagMlPiywAlgxB2-53O2n0ljzzNk'; // Gunakan kunci eyJ...
+const SUPA_URL = 'https://toyfsmqgqmwxezcaxbhd.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRveWZzbXFncW13eGV6Y2F4YmhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDk5MjUsImV4cCI6MjEwOTk4NTkyNX0.Qcq-Ld9VUcOcGUxnagMlPiywAlgxB2-53O2n0ljzzNk';
 const HEADERS = { 
   'apikey': SUPA_KEY,
   'Authorization': 'Bearer ' + SUPA_KEY,
@@ -72,13 +136,18 @@ const HEADERS = {
 };
 // ==================================
 
+// ====== MODE OVERLAY ======
+const params = new URLSearchParams(location.search);
+const IS_OVERLAY = params.get('overlay') === '1' || params.get('mode') === 'overlay';
+if (IS_OVERLAY) document.body.classList.add('overlay-mode');
+// ==========================
+
 const TABS = [['live', 'Live'], ['klas', 'Klasemen'], ['jadwal', 'Jadwal'], ['cari', 'Cari Pemain']];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 let M = [], K = [], P = [], tab = 'live', q = '';
 
-// PERUBAHAN 1 & 2: Mapping label kategori dan variabel filter aktif
 const KATEGORI_LABEL = {
   'BW': "Women's Beginner",
   'LB': 'Lower Bronze Mix',
@@ -102,13 +171,23 @@ function labelBabak(m) {
   return (BABAK[m.round_code] || m.round_code) + (n && m.round_code !== '3RD' ? ' ' + n : '');
 }
 
+// Format jam HH:MM dari planned_start
+function formatJam(ts) {
+  if (!ts) return '';
+  try {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+  } catch (e) { return ''; }
+}
+
 let fetching = false, fetchLagi = false, lastPairs = 0, lastUpd = '';
 
 async function fetchData() {
-  if (fetching) { fetchLagi = true; return; }   // jangan dua pengambilan sekaligus
+  if (fetching) { fetchLagi = true; return; }
   fetching = true;
   try {
-    const ambilPairs = !P.length || Date.now() - lastPairs > 600000;   // daftar pasangan jarang berubah: 10 menit
+    const ambilPairs = !P.length || Date.now() - lastPairs > 600000;
     const [resM, resS, resK, resP] = await Promise.all([
       fetch(`${SUPA_URL}/rest/v1/matches?select=code,category_code,match_type,round_code,group_code,pair1_code,pair2_code,pair1_source,pair2_source,status,games1,games2,assigned_court,planned_start&order=planned_start.asc.nullslast,code.asc`, { headers: HEADERS }),
       fetch(`${SUPA_URL}/rest/v1/match_state?select=match_code,games1,games2,display1,display2`, { headers: HEADERS }),
@@ -142,7 +221,8 @@ async function fetchData() {
         g1: m.status === 'finished' ? m.games1 : (st ? st.games1 : 0),
         g2: m.status === 'finished' ? m.games2 : (st ? st.games2 : 0),
         d1: st ? st.display1 : '', d2: st ? st.display2 : '',
-        live: m.status === 'live'
+        live: m.status === 'live',
+        jam: formatJam(m.planned_start)
       };
     });
 
@@ -238,22 +318,29 @@ function card(m) {
   const when = m.status === 'finished' ? 'Selesai' : (m.live ? '<span class="badge">LIVE</span> ' : '') + 'Lap ' + esc(m.lap);
   const pt1 = m.d1 ? '<span class="pt">' + esc(m.d1) + '</span>' : '';
   const pt2 = m.d2 ? '<span class="pt">' + esc(m.d2) + '</span>' : '';
-  // Tampilkan label kategori yang sudah di-mapping
   const katLabel = KATEGORI_LABEL[m.kat] || m.kat;
+  const jamHtml = m.jam ? ' <span class="jam">⏰ ' + esc(m.jam) + '</span>' : '';
 
-  return '<div class="card' + (m.live ? ' live' : '') + '"><div class="meta"><span>' + esc(katLabel) + ' · ' + esc(m.babak) + '</span><span>' + when + '</span></div>' +
+  return '<div class="card' + (m.live ? ' live' : '') + '"><div class="meta"><span>' + esc(katLabel) + ' · ' + esc(m.babak) + jamHtml + '</span><span>' + when + '</span></div>' +
     '<div class="row' + (w == 1 ? ' win' : '') + '"><span>' + esc(m.p1) + '</span><b>' + (s ? esc(s[0]) : '') + '</b>' + pt1 + '</div>' +
     '<div class="row' + (w == 2 ? ' win' : '') + '"><span>' + esc(m.p2) + '</span><b>' + (s ? esc(s[1]) : '') + '</b>' + pt2 + '</div></div>';
 }
 
-// PERUBAHAN 1 & 2: Menggunakan label mapping untuk chip
 const chips = (opts, cur, key) => '<div class="chips">' + opts.map(o => {
   const label = KATEGORI_LABEL[o] || o;
   return '<button class="chip' + (o === cur ? ' on' : '') + '" data-f="' + key + '" data-v="' + esc(o) + '">' + esc(label) + '</button>';
 }).join('') + '</div>';
 
+function overlayView() {
+  const live = M.filter(m => m.live);
+  const done = M.filter(m => m.status === 'finished').slice(0, Math.max(0, 3 - live.length));
+  const list = live.concat(done).slice(0, 3);
+  return list.map(card).join('') || '<p class="mu">Belum ada pertandingan.</p>';
+}
+
 const V = {
   live() {
+    if (IS_OVERLAY) return overlayView();
     const a = M.filter(m => m.live);
     const n = M.filter(m => m.status === 'ready' || m.status === 'scheduled').slice(0, 6);
     const r = M.filter(m => m.status === 'finished').reverse().slice(0, 6);
@@ -266,7 +353,6 @@ const V = {
     if (!K.length) return '<p class="mu">Belum ada data klasemen.</p>';
     const KAT = [...new Set(K.map(k => k.category_code))];
     
-    // PERUBAHAN 2: Gunakan filterKat jika sudah dipilih, jika belum gunakan KAT[0]
     if (!filterKat || !KAT.includes(filterKat)) filterKat = KAT[0];
 
     let html = chips(KAT, filterKat, 'kat');
@@ -304,6 +390,12 @@ function hasilCari() {
 }
 
 function render() {
+  if (IS_OVERLAY) {
+    tab = 'live';
+    const nav = $('#nav'); if (nav) nav.style.display = 'none';
+    $('#view').innerHTML = V.live();
+    return;
+  }
   $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
   if (tab === 'cari' && $('#q')) return hasilCari();
   $('#view').innerHTML = V[tab](); 
@@ -314,7 +406,6 @@ document.addEventListener('click', e => {
   const el = e.target.closest('[data-t],[data-f]'); if (!el) return; const d = el.dataset;
   if (d.t) { tab = d.t; return render(); }
   
-  // PERUBAHAN 2: Logika filter chip yang benar
   if (d.f === 'kat') {
     filterKat = d.v;
     render();
