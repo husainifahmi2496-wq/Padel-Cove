@@ -83,46 +83,50 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
 <section class="spons">
   <small>DIDUKUNG OLEH</small>
   <div class="spons-scroll">
-    <!-- 
-      AUTO-SCROLL SPONSOR:
-      - Cukup tambahkan/ubah <img> di dalam .spons-track.
-      - JANGAN menghapus duplikasi (aria-hidden="true") — itu untuk loop mulus.
-      - Untuk menambah sponsor: tambahkan <img> yang sama di BOTH grup (asli + duplikat).
-      - Atur kecepatan lewat CSS: .spons-track{animation:sponsScroll 30s ...}
+    <!--
+      AUTO-SCROLL SPONSOR (10 logo):
+      - WAJIB duplikat setiap logo di kedua grup (asli + duplikat aria-hidden).
+      - Agar proporsional 10 logo, durasi animasi diperlambat ke 50s.
+      - Ganti src, alt, dan (opsional) class per logo sesuai kebutuhan.
     -->
     <div class="spons-track" id="sponsTrack">
-      <!-- ===== Grup asli ===== -->
+      <!-- ===== Grup asli (10 logo) ===== -->
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor1.png" alt="Sponsor 1" onerror="this.style.opacity=.3">
+      <img src="sponsor1.png"  alt="Sponsor 1"  class="sp" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor2.png" alt="Sponsor 2" onerror="this.style.opacity=.3">
+      <img src="sponsor2.png"  alt="Sponsor 2"  class="sp" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor3.png" alt="Sponsor 3" onerror="this.style.opacity=.3">
+      <img src="sponsor3.png"  alt="Sponsor 3"  class="sp" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor4.png" alt="Sponsor 4" onerror="this.style.opacity=.3">
+      <img src="sponsor4.png"  alt="Sponsor 4"  class="sp" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor5.png" alt="Sponsor 5" onerror="this.style.opacity=.3">
+      <img src="sponsor5.png"  alt="Sponsor 5"  class="sp" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor6.png" alt="Sponsor 6" onerror="this.style.opacity=.3">
-      <!-- ===== Grup duplikat (untuk loop) ===== -->
+      <img src="sponsor6.png"  alt="Sponsor 6"  class="sp" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor7.png"  alt="Sponsor 7"  class="sp" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor8.png"  alt="Sponsor 8"  class="sp" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor9.png"  alt="Sponsor 9"  class="sp" onerror="this.style.opacity=.3">
+      <!-- Ganti src dengan URL logo sponsor -->
+      <img src="sponsor10.png" alt="Sponsor 10" class="sp" onerror="this.style.opacity=.3">
+      <!-- ===== Grup duplikat (untuk loop mulus) ===== -->
       <span style="display:contents" aria-hidden="true">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor1.png" alt="" onerror="this.style.opacity=.3">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor2.png" alt="" onerror="this.style.opacity=.3">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor3.png" alt="" onerror="this.style.opacity=.3">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor4.png" alt="" onerror="this.style.opacity=.3">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor5.png" alt="" onerror="this.style.opacity=.3">
-        <!-- Ganti src dengan URL logo sponsor -->
-        <img src="sponsor6.png" alt="" onerror="this.style.opacity=.3">
+        <img src="sponsor1.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor2.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor3.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor4.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor5.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor6.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor7.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor8.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor9.png"  alt="" class="sp" onerror="this.style.opacity=.3">
+        <img src="sponsor10.png" alt="" class="sp" onerror="this.style.opacity=.3">
       </span>
     </div>
   </div>
-</section>
-<footer>Skor diperbarui otomatis dari server pusat.</footer>
+</section><footer>Skor diperbarui otomatis dari server pusat.</footer>
 <!-- Supabase Realtime: skor live tanpa menunggu polling. Jika CDN gagal dimuat, halaman tetap jalan dengan polling 15 detik. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
