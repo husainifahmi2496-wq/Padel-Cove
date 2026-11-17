@@ -44,23 +44,18 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 .pt{background:var(--lime);color:var(--navy);border-radius:8px;padding:2px 8px;margin-left:8px;font:800 12px var(--fh);min-width:36px;text-align:center}
 .row{align-items:center}.row span:first-child{flex:1}
 
-/* ====== SPONSOR AUTO-SCROLL & GRID ====== */
-.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25); transition: padding 0.3s ease;}
-body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
-.spons-title{font:800 11px var(--fh);letter-spacing:.14em;color:var(--navy);text-transform:uppercase;margin-bottom:12px;height:16px; display: none;} /* Tulisan GOLD SPONSOR dihilangkan */
-.spons-grid{display:grid;gap:8px;margin-bottom:12px;min-height:60px; align-content:center; transition: opacity 0.3s ease;}
-.spons-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-.spons-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.spons-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-.spons-item{display:flex;align-items:center;justify-content:center;background:#f8faff;border:1.5px dashed #ccd9f0;border-radius:12px;padding:12px 8px;height:100%;min-height:54px;}
-.spons-item img{max-width:100%;max-height:32px;object-fit:contain;}
-/* Animasi Fade */
-.fade-out { opacity: 0; }
-.fade-in { opacity: 1; }
-/* Indikator Halaman */
-.spons-dots{display:flex;justify-content:center;gap:6px;margin-top:4px;}
-.dot{width:6px;height:6px;border-radius:50%;background:#ccd9f0;transition:background 0.3s;}
-.dot.active{background:var(--navy);}
+/* ====== SPONSOR STATIS BERDASARKAN HALAMAN ====== */
+.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25);}
+body{padding-bottom:calc(var(--spons-h, 110px) + 16px)}
+.spons-grid{display:grid;gap:8px;align-content:center;}
+.spons-grid.cols-2{grid-template-columns:repeat(2,1fr);--h:68px;}
+.spons-grid.cols-3{grid-template-columns:repeat(3,1fr);--h:56px;}
+.spons-grid.cols-4{grid-template-columns:repeat(4,1fr);--h:46px;}
+.spons-item{display:flex;align-items:center;justify-content:center;height:var(--h);padding:4px 6px;background:#fff;border:1px solid #e3eaf7;border-radius:10px;}
+.spons-item img{width:100%;height:100%;object-fit:contain;}
+.spons-grid{transition:opacity .35s ease}
+.spons-grid.fade{opacity:0}
+.spons-txt{font:800 11px var(--fh);color:var(--navy);line-height:1.2;text-align:center}
 
 /* ====== MODE OVERLAY (Live Streaming) ====== */
 body.overlay-mode{background:transparent !important;padding-top:0;padding-bottom:0}
@@ -90,12 +85,8 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
 <main id="view"></main>
 
 <section class="spons">
-  <div class="spons-title" id="spons-title">GOLD SPONSOR</div>
-  <div class="spons-grid cols-3" id="spons-grid">
+  <div class="spons-grid" id="spons-grid">
     <!-- Konten sponsor di-generate oleh JS -->
-  </div>
-  <div class="spons-dots" id="spons-dots">
-    <!-- Dots di-generate oleh JS -->
   </div>
 </section>
 
@@ -113,47 +104,48 @@ const HEADERS = {
 };
 // ==================================
 
-// ====== KONFIGURASI SPONSOR ======
-const SPONSOR_SLIDES = [
-  {
-    title: 'GOLD SPONSOR',
+// ====== KONFIGURASI SPONSOR PER HALAMAN ======
+const SPONSOR_MAP = {
+  'live': {
     cols: 2,
     logos: [
       { src: 'sponsor/sponsor-10-mslemon.png', name: 'Ms Lemon' },
       { src: 'sponsor/sponsor-07-alina.png', name: 'Alina Beauty' }
     ]
   },
-  {
-    title: 'SUPPORTING SPONSOR',
+  'klas': {
     cols: 3,
     logos: [
       { src: 'sponsor/sponsor-05-reta.png', name: 'Reta Beauty Clinic' },
       { src: 'sponsor/sponsor-04-vato.png', name: 'Vato Coffee' },
-      { src: 'sponsor/sponsor-01-exodus.png', name: 'Exodus' }
+      { src: 'sponsor/sponsor-01-exodus.png', name: 'Exodus' },
+      { src: 'sponsor/sponsor-14-newlenggeng.png', name: 'New Langgeng Jaya', alt: ['sponsor/sponsor-14-newlanggeng', 'sponsor/sponsor-14-newlanggengjaya', 'sponsor/sponsor-14-newlenggengjaya'] },
+      { src: 'sponsor/sponsor-18-inars.png', name: 'inars.co' },
+      { src: 'sponsor/sponsor-11-zest.png', name: 'Zest Fitness' }
     ]
   },
-  {
-    title: 'FRIENDS OF COVE',
+  'jadwal': {
     cols: 3,
     logos: [
       { src: 'sponsor/sponsor-15-mandiri.png', name: 'Bank Mandiri' },
-      { src: 'sponsor/sponsor-08-grab.png', name: 'Grab' },
+      { src: 'sponsor/sponsor-08-grab.png', name: 'RedDoorz' }, // Asumsi file ini diganti menjadi RedDoorz
       { src: 'sponsor/sponsor-17-grey.png', name: 'GREY Resto & Coffee' }
     ]
   },
-  {
-    title: 'OFFICIAL PARTNER',
+  'cari': {
     cols: 4,
     logos: [
+      { src: 'sponsor/sponsor-08-grab.png', name: 'Grab' },
+      { src: 'sponsor/sponsor-02-jih.png', name: 'RS JIH Purwokerto' },
+      { src: 'sponsor/sponsor-09-pixelpad.png', name: 'PixelPad Photography', alt: ['sponsor/sponsor-09-pixel-pad', 'sponsor/sponsor-09-pixelpadphotography'] },
+      { src: 'sponsor/sponsor-12-nata.png', name: 'Nata Acrylic' },
       { src: 'sponsor/sponsor-06-fitbar.png', name: 'Fitbar' },
       { src: 'sponsor/sponsor-03-almoz.png', name: 'Almoz' },
-      { src: 'sponsor/sponsor-13-cola.png', name: 'Colave' },
+      { src: 'sponsor/sponsor-13-cola.png', name: 'Colave', alt: ['sponsor/sponsor-13-colave', 'sponsor/sponsor-13-colav'] },
       { src: 'sponsor/sponsor-16-aqua.png', name: 'Aqua' }
     ]
   }
-];
-let currentSlide = 0;
-let sponsorInterval = null;
+};
 // =================================
 
 // ====== MODE OVERLAY ======
@@ -409,58 +401,77 @@ function hasilCari() {
   }).join('') || '<p class="mu">Pemain tidak ditemukan.</p>';
 }
 
-// ====== LOGIKA SPONSOR AUTO-SWITCH ======
-function renderSponsor(slideIndex) {
-  const titleEl = $('#spons-title');
+// ====== LOGIKA RENDER SPONSOR BERDASARKAN TAB ======
+function sesuaikanPadding() {
+  const sp = document.querySelector('.spons');
+  if (sp) document.body.style.setProperty('--spons-h', sp.offsetHeight + 'px');
+}
+window.addEventListener('resize', sesuaikanPadding);
+
+let sponsTab = null, sponsTimer = null, sponsPage = 0;
+const SPONS_DETIK = 5; // jeda pergantian logo (detik)
+const EKS = ['png', 'jpg', 'jpeg', 'webp', 'svg', 'PNG', 'JPG', 'JPEG'];
+
+// Daftar file yang dicoba berurutan sampai ada yang berhasil dimuat
+function kandidatLogo(logo) {
+  const bases = [logo.src.replace(/\.[^.\/]+$/, '')].concat(logo.alt || []);
+  const out = [logo.src];
+  bases.forEach(b => EKS.forEach(e => { const f = b + '.' + e; if (!out.includes(f)) out.push(f); }));
+  return out;
+}
+
+// Jika semua kandidat gagal, tampilkan nama sponsor sebagai teks
+function logoGagal(img) {
+  const list = JSON.parse(img.dataset.c || '[]');
+  const i = Number(img.dataset.i || 0) + 1;
+  if (i < list.length) { img.dataset.i = i; img.src = list[i]; return; }
+  const span = document.createElement('span');
+  span.className = 'spons-txt';
+  span.textContent = img.alt;
+  img.replaceWith(span);
+  sesuaikanPadding();
+}
+
+function tampilHalamanSponsor(data, idx) {
   const gridEl = $('#spons-grid');
-  const dotsEl = $('#spons-dots');
-  if (!titleEl || !gridEl || !dotsEl) return;
-
-  const slide = SPONSOR_SLIDES[slideIndex];
-  
-  // Fade out effect
-  gridEl.classList.add('fade-out');
-  titleEl.classList.add('fade-out');
-
-  setTimeout(() => {
-    titleEl.textContent = slide.title;
-    
-    // Handle column layout
-    gridEl.className = `spons-grid cols-${slide.cols} fade-out`;
-    
-    // Generate Logo items
-    gridEl.innerHTML = slide.logos.map(logo => `
-      <div class="spons-item">
-        <img src="${logo.src}" alt="${logo.name}" onerror="this.style.opacity=.2">
-      </div>
-    `).join('');
-
-    // Generate Dots
-    dotsEl.innerHTML = SPONSOR_SLIDES.map((_, i) => 
-      `<div class="dot ${i === slideIndex ? 'active' : ''}"></div>`
-    ).join('');
-
-    // Fade in effect
-    gridEl.classList.remove('fade-out');
-    titleEl.classList.remove('fade-out');
-  }, 300); // 300ms sesuai durasi CSS transition
+  if (!gridEl) return;
+  const per = data.cols;
+  const potong = data.logos.slice(idx * per, idx * per + per);
+  gridEl.innerHTML = potong.map(logo => `
+    <div class="spons-item">
+      <img src="${logo.src}" alt="${esc(logo.name)}" data-i="0" data-c="${esc(JSON.stringify(kandidatLogo(logo)))}" onload="sesuaikanPadding()" onerror="logoGagal(this)">
+    </div>
+  `).join('');
+  sesuaikanPadding();
 }
 
-function startSponsorAutoSwitch() {
-  if (sponsorInterval) return;
-  sponsorInterval = setInterval(() => {
-    currentSlide = (currentSlide + 1) % SPONSOR_SLIDES.length;
-    renderSponsor(currentSlide);
-  }, 5000); // Ganti tiap 5 detik
-}
+function renderSponsor(halaman) {
+  const gridEl = $('#spons-grid');
+  if (!gridEl) return;
+  if (sponsTab === halaman) return; // jangan reset rotasi setiap skor berubah
+  sponsTab = halaman;
 
-function stopSponsorAutoSwitch() {
-  if (sponsorInterval) {
-    clearInterval(sponsorInterval);
-    sponsorInterval = null;
+  clearInterval(sponsTimer);
+  const data = SPONSOR_MAP[halaman] || SPONSOR_MAP['live'];
+  gridEl.className = `spons-grid cols-${data.cols}`;
+
+  // Sekali tampil sebanyak jumlah kolom (klasemen 3 logo, cari pemain 4 logo)
+  const jmlHalaman = Math.ceil(data.logos.length / data.cols);
+  sponsPage = 0;
+  tampilHalamanSponsor(data, 0);
+
+  if (jmlHalaman > 1) {
+    sponsTimer = setInterval(() => {
+      gridEl.classList.add('fade');
+      setTimeout(() => {
+        sponsPage = (sponsPage + 1) % jmlHalaman;
+        tampilHalamanSponsor(data, sponsPage);
+        gridEl.classList.remove('fade');
+      }, 350);
+    }, SPONS_DETIK * 1000);
   }
 }
-// ==========================================
+// ====================================================
 
 function render() {
   if (IS_OVERLAY) {
@@ -471,13 +482,8 @@ function render() {
   }
   $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
   
-  // Logika Auto-switch Sponsor
-  if (tab === 'jadwal') {
-    stopSponsorAutoSwitch();
-    renderSponsor(0); // Kembalikan ke halaman pertama (Gold Sponsor) jika di jadwal
-  } else {
-    startSponsorAutoSwitch();
-  }
+  // Ganti sponsor sesuai tab yang aktif
+  renderSponsor(tab);
 
   if (tab === 'cari' && $('#q')) return hasilCari();
   $('#view').innerHTML = V[tab](); 
