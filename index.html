@@ -44,18 +44,22 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 .pt{background:var(--lime);color:var(--navy);border-radius:8px;padding:2px 8px;margin-left:8px;font:800 12px var(--fh);min-width:36px;text-align:center}
 .row{align-items:center}.row span:first-child{flex:1}
 
-/* ====== SPONSOR AUTO-SCROLL (MARQUEE) ====== */
-.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:8px 14px calc(8px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25)}
-/* Beri ruang di bawah halaman supaya konten & footer tidak tertutup sponsor yang terkunci */
-body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-.spons small{font:800 10px var(--fh);letter-spacing:.14em;color:var(--navy)}
-.spons-scroll{position:relative;overflow:hidden;margin-top:6px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.spons-track{display:flex;align-items:center;gap:32px;width:max-content;animation:sponsScroll 30s linear infinite}
-.spons-track img{height:36px;max-width:110px;object-fit:contain;flex:0 0 auto;display:block}
-/* Track digandakan 2x, geser setengah -> loop mulus */
-@keyframes sponsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-/* Berhenti saat hover */
-.spons-scroll:hover .spons-track{animation-play-state:paused}
+/* ====== SPONSOR AUTO-SCROLL & GRID ====== */
+.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25); transition: padding 0.3s ease;}
+body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.spons-title{font:800 11px var(--fh);letter-spacing:.14em;color:var(--navy);text-transform:uppercase;margin-bottom:12px;height:16px;}
+.spons-grid{display:grid;gap:8px;margin-bottom:12px;min-height:60px; align-content:center; transition: opacity 0.3s ease;}
+.spons-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.spons-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.spons-item{display:flex;align-items:center;justify-content:center;background:#f8faff;border:1.5px dashed #ccd9f0;border-radius:12px;padding:12px 8px;height:100%;min-height:54px;}
+.spons-item img{max-width:100%;max-height:32px;object-fit:contain;}
+/* Animasi Fade */
+.fade-out { opacity: 0; }
+.fade-in { opacity: 1; }
+/* Indikator Halaman */
+.spons-dots{display:flex;justify-content:center;gap:6px;margin-top:4px;}
+.dot{width:6px;height:6px;border-radius:50%;background:#ccd9f0;transition:background 0.3s;}
+.dot.active{background:var(--navy);}
 
 /* ====== MODE OVERLAY (Live Streaming) ====== */
 body.overlay-mode{background:transparent !important;padding-top:0;padding-bottom:0}
@@ -83,51 +87,17 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
 <div class="tape"><span>LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦ LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦</span></div>
 <nav id="nav"></nav>
 <main id="view"></main>
-<section class="spons">
-  <small>DIDUKUNG OLEH</small>
-  <div class="spons-scroll">
-    <!--
-      AUTO-SCROLL SPONSOR (9/10 logo):
-      - Lokasi file: folder sponsor/ di root repo.
-      - WAJIB duplikat setiap logo di kedua grup (asli + duplikat aria-hidden).
-      - Jika ada file ke-10, tambahkan baris <img> baru di kedua grup.
-    -->
-    <div class="spons-track" id="sponsTrack">
-      <!-- ===== Grup asli ===== -->
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-01-exodus.png" alt="Exodus" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-02-jih.png" alt="RS JIH Purwokerto" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-03-almoz.png" alt="Almoz" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-04-vato.png" alt="Vato Coffee" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-05-reta.png" alt="Reta Clinic" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-06-fitbar.png" alt="Fitbar" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-07-alina.png" alt="Alina Beauty" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-08-grab.png" alt="Grab" onerror="this.style.opacity=.3">
-      <!-- Ganti src dengan URL logo sponsor -->
-      <img src="sponsor/sponsor-09-pixelpad.png" alt="PixelPad" onerror="this.style.opacity=.3">
 
-      <!-- ===== Grup duplikat (untuk loop mulus) ===== -->
-      <span style="display:contents" aria-hidden="true">
-        <img src="sponsor/sponsor-01-exodus.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-02-jih.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-03-almoz.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-04-vato.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-05-reta.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-06-fitbar.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-07-alina.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-08-grab.png" alt="" onerror="this.style.opacity=.3">
-        <img src="sponsor/sponsor-09-pixelpad.png" alt="" onerror="this.style.opacity=.3">
-      </span>
-    </div>
+<section class="spons">
+  <div class="spons-title" id="spons-title">GOLD SPONSOR</div>
+  <div class="spons-grid cols-3" id="spons-grid">
+    <!-- Konten sponsor di-generate oleh JS -->
+  </div>
+  <div class="spons-dots" id="spons-dots">
+    <!-- Dots di-generate oleh JS -->
   </div>
 </section>
+
 <footer>Skor diperbarui otomatis dari server pusat.</footer>
 <!-- Supabase Realtime: skor live tanpa menunggu polling. Jika CDN gagal dimuat, halaman tetap jalan dengan polling 15 detik. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -141,6 +111,49 @@ const HEADERS = {
   'Content-Type': 'application/json'
 };
 // ==================================
+
+// ====== KONFIGURASI SPONSOR ======
+const SPONSOR_SLIDES = [
+  {
+    title: 'GOLD SPONSOR',
+    cols: 2,
+    logos: [
+      { src: 'sponsor/sponsor-10-mslemon.png', name: 'Ms Lemon' },
+      { src: 'sponsor/sponsor-07-alina.png', name: 'Alina Beauty' }
+    ]
+  },
+  {
+    title: 'SUPPORTING SPONSOR',
+    cols: 3,
+    logos: [
+      { src: 'sponsor/sponsor-05-reta.png', name: 'Reta Beauty Clinic' },
+      { src: 'sponsor/sponsor-04-vato.png', name: 'Vato Coffee' },
+      { src: 'sponsor/sponsor-01-exodus.png', name: 'Exodus' }
+    ]
+  },
+  {
+    title: 'FRIENDS OF COVE',
+    cols: 3,
+    logos: [
+      { src: 'sponsor/sponsor-15-mandiri.png', name: 'Bank Mandiri' },
+      { src: 'sponsor/sponsor-08-grab.png', name: 'Grab' },
+      { src: 'sponsor/sponsor-17-grey.png', name: 'GREY Resto & Coffee' }
+    ]
+  },
+  {
+    title: 'OFFICIAL PARTNER',
+    cols: 4,
+    logos: [
+      { src: 'sponsor/sponsor-06-fitbar.png', name: 'Fitbar' },
+      { src: 'sponsor/sponsor-03-almoz.png', name: 'Almoz' },
+      { src: 'sponsor/sponsor-13-cola.png', name: 'Colave' },
+      { src: 'sponsor/sponsor-16-aqua.png', name: 'Aqua' }
+    ]
+  }
+];
+let currentSlide = 0;
+let sponsorInterval = null;
+// =================================
 
 // ====== MODE OVERLAY ======
 const params = new URLSearchParams(location.search);
@@ -370,22 +383,22 @@ const V = {
     });
 
     for (const g in grupMap) {
-      html += `<div class="card"><b>${esc(KATEGORI_LABEL[filterKat] || filterKat)} — Group ${esc(g)}</b><table><tr><th>#</th><th>Pasangan</th><th>M</th><th>W</th><th>L</th><th>Sel</th></tr>`;
+      html += `<div class="card"><b>${esc(KATEGORI_LABEL[filterKat] || filterKat)} — Group ${esc(g)}</b><table><tr><th>#</th><th>Tim</th><th>M</th><th>W</th><th>L</th><th>Poin</th></tr>`;
       html += grupMap[g].map((r, i) => `<tr class="${i < 2 ? 'q' : ''}"><td>${i+1}</td><td>${esc(r.nama_pasangan)}</td><td>${r.main}</td><td>${r.menang}</td><td>${r.kalah}</td><td>${r.selisih_game}</td></tr>`).join('');
       html += `</table></div>`;
     }
-    return html + '<p class="mu">M = main, W = menang, L = kalah, Sel = selisih game. Baris hijau = zona lolos.</p>';
+    return html + '<p class="mu">M = main, W = menang, L = kalah, Poin = selisih game. Baris biru = zona lolos.</p>';
   },
   jadwal() {
     const l = M.filter(m => m.status === 'scheduled' || m.status === 'ready');
     return (l.map(card).join('') || '<p class="mu">Belum ada jadwal.</p>');
   },
-  cari() { return '<input id="q" type="search" placeholder="Cari nama pemain atau ID pasangan…" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
+  cari() { return '<input id="q" type="search" placeholder="Ketikan nama pemain" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
 };
 
 function hasilCari() {
   const t = q.trim().toLowerCase(), box = $('#hs'); if (!box) return;
-  if (t.length < 2) { box.innerHTML = '<p class="mu">Ketik minimal 2 huruf.</p>'; return; }
+  if (t.length < 2) { box.innerHTML = ''; return; }
   
   const filtered = P.filter(r => (r.player1 + ' ' + r.player2 + ' ' + r.code).toLowerCase().includes(t));
   box.innerHTML = filtered.slice(0, 12).map(r => {
@@ -395,6 +408,59 @@ function hasilCari() {
   }).join('') || '<p class="mu">Pemain tidak ditemukan.</p>';
 }
 
+// ====== LOGIKA SPONSOR AUTO-SWITCH ======
+function renderSponsor(slideIndex) {
+  const titleEl = $('#spons-title');
+  const gridEl = $('#spons-grid');
+  const dotsEl = $('#spons-dots');
+  if (!titleEl || !gridEl || !dotsEl) return;
+
+  const slide = SPONSOR_SLIDES[slideIndex];
+  
+  // Fade out effect
+  gridEl.classList.add('fade-out');
+  titleEl.classList.add('fade-out');
+
+  setTimeout(() => {
+    titleEl.textContent = slide.title;
+    
+    // Handle column layout
+    gridEl.className = `spons-grid cols-${slide.cols} fade-out`;
+    
+    // Generate Logo items
+    gridEl.innerHTML = slide.logos.map(logo => `
+      <div class="spons-item">
+        <img src="${logo.src}" alt="${logo.name}" onerror="this.style.opacity=.2">
+      </div>
+    `).join('');
+
+    // Generate Dots
+    dotsEl.innerHTML = SPONSOR_SLIDES.map((_, i) => 
+      `<div class="dot ${i === slideIndex ? 'active' : ''}"></div>`
+    ).join('');
+
+    // Fade in effect
+    gridEl.classList.remove('fade-out');
+    titleEl.classList.remove('fade-out');
+  }, 300); // 300ms sesuai durasi CSS transition
+}
+
+function startSponsorAutoSwitch() {
+  if (sponsorInterval) return;
+  sponsorInterval = setInterval(() => {
+    currentSlide = (currentSlide + 1) % SPONSOR_SLIDES.length;
+    renderSponsor(currentSlide);
+  }, 5000); // Ganti tiap 5 detik
+}
+
+function stopSponsorAutoSwitch() {
+  if (sponsorInterval) {
+    clearInterval(sponsorInterval);
+    sponsorInterval = null;
+  }
+}
+// ==========================================
+
 function render() {
   if (IS_OVERLAY) {
     tab = 'live';
@@ -403,6 +469,15 @@ function render() {
     return;
   }
   $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
+  
+  // Logika Auto-switch Sponsor
+  if (tab === 'jadwal') {
+    stopSponsorAutoSwitch();
+    renderSponsor(0); // Kembalikan ke halaman pertama (Gold Sponsor) jika di jadwal
+  } else {
+    startSponsorAutoSwitch();
+  }
+
   if (tab === 'cari' && $('#q')) return hasilCari();
   $('#view').innerHTML = V[tab](); 
   if (tab === 'cari') hasilCari();
@@ -418,13 +493,4 @@ document.addEventListener('click', e => {
   }
 });
 
-document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilCari(); } });
-
-// Render awal & polling
-render();
-fetchData();
-mulaiRealtime();
-jadwalkanPoll();
-</script>
-</body>
-</html>
+document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilC
