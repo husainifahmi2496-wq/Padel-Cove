@@ -45,18 +45,38 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 .row{align-items:center}.row span:first-child{flex:1}
 
 /* ====== SPONSOR STATIS BERDASARKAN HALAMAN ====== */
-.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25);}
+.spons{
+  position:fixed;left:0;right:0;bottom:0;z-index:6;
+  max-width:736px;margin:0 auto;
+  padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+  text-align:center;
+  background:linear-gradient(180deg, rgba(10,42,122,.92) 0%, rgba(6,24,80,.98) 100%);
+  backdrop-filter:blur(10px);
+  border-top:1.5px solid rgba(197,245,68,.45);
+  border-radius:16px 16px 0 0;
+  color:#fff;
+  box-shadow:0 -6px 22px rgba(0,0,0,.35), 0 -1px 0 rgba(197,245,68,.15) inset;
+}
 body{padding-bottom:calc(var(--spons-h, 110px) + 16px)}
 .spons-grid{display:grid;gap:8px;align-content:center;}
 .spons-grid.cols-2{grid-template-columns:repeat(2,1fr);--h:68px;}
 .spons-grid.cols-3{grid-template-columns:repeat(3,1fr);--h:56px;}
 .spons-grid.cols-4{grid-template-columns:repeat(4,1fr);--h:46px;}
-.spons-item{display:flex;align-items:center;justify-content:center;height:var(--h);padding:4px 6px;background:#fff;border:1px solid #e3eaf7;border-radius:10px;}
+.spons-item{
+  display:flex;align-items:center;justify-content:center;
+  height:var(--h);padding:6px 8px;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(197,245,68,.35);
+  border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.spons-item:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.3);}
 .spons-item img{width:100%;height:100%;object-fit:contain;}
 .spons-grid{transition:opacity .35s ease}
 .spons-grid.fade{opacity:0}
 .spons-txt{font:800 11px var(--fh);color:var(--navy);line-height:1.2;text-align:center}
-
+  
 /* ====== MODE OVERLAY (Live Streaming) ====== */
 body.overlay-mode{background:transparent !important;padding-top:0;padding-bottom:0}
 body.overlay-mode header,
