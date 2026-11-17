@@ -47,8 +47,9 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 /* ====== SPONSOR AUTO-SCROLL & GRID ====== */
 .spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25); transition: padding 0.3s ease;}
 body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
-.spons-title{font:800 11px var(--fh);letter-spacing:.14em;color:var(--navy);text-transform:uppercase;margin-bottom:12px;height:16px;}
+.spons-title{font:800 11px var(--fh);letter-spacing:.14em;color:var(--navy);text-transform:uppercase;margin-bottom:12px;height:16px; display: none;} /* Tulisan GOLD SPONSOR dihilangkan */
 .spons-grid{display:grid;gap:8px;margin-bottom:12px;min-height:60px; align-content:center; transition: opacity 0.3s ease;}
+.spons-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
 .spons-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
 .spons-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
 .spons-item{display:flex;align-items:center;justify-content:center;background:#f8faff;border:1.5px dashed #ccd9f0;border-radius:12px;padding:12px 8px;height:100%;min-height:54px;}
@@ -493,4 +494,13 @@ document.addEventListener('click', e => {
   }
 });
 
-document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilC
+document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilCari(); } });
+
+// Render awal & polling
+render();
+fetchData();
+mulaiRealtime();
+jadwalkanPoll();
+</script>
+</body>
+</html>
