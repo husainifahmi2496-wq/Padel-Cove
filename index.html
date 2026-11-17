@@ -44,18 +44,20 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
 .row{align-items:center}.row span:first-child{flex:1}
 
 /* ====== SPONSOR AUTO-SCROLL (MARQUEE) ====== */
-.spons{max-width:736px;margin:14px auto;padding:14px;text-align:center;background:#fff;border-radius:20px;color:var(--navy)}
+.spons{position:fixed;left:0;right:0;bottom:0;z-index:6;max-width:736px;margin:0 auto;padding:8px 14px calc(8px + env(safe-area-inset-bottom));text-align:center;background:#fff;border-radius:16px 16px 0 0;color:var(--navy);box-shadow:0 -4px 16px rgba(0,0,0,.25)}
+/* Beri ruang di bawah halaman supaya konten & footer tidak tertutup sponsor yang terkunci */
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 .spons small{font:800 10px var(--fh);letter-spacing:.14em;color:var(--navy)}
-.spons-scroll{position:relative;overflow:hidden;margin-top:10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.spons-scroll{position:relative;overflow:hidden;margin-top:6px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .spons-track{display:flex;align-items:center;gap:32px;width:max-content;animation:sponsScroll 30s linear infinite}
-.spons-track img{height:46px;max-width:120px;object-fit:contain;flex:0 0 auto;display:block}
+.spons-track img{height:36px;max-width:110px;object-fit:contain;flex:0 0 auto;display:block}
 /* Track digandakan 2x, geser setengah -> loop mulus */
 @keyframes sponsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 /* Berhenti saat hover */
 .spons-scroll:hover .spons-track{animation-play-state:paused}
 
 /* ====== MODE OVERLAY (Live Streaming) ====== */
-body.overlay-mode{background:transparent !important;padding-top:0}
+body.overlay-mode{background:transparent !important;padding-top:0;padding-bottom:0}
 body.overlay-mode header,
 body.overlay-mode .tape,
 body.overlay-mode nav,
@@ -109,7 +111,7 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
       <img src="sponsor/sponsor-08-grab.png" alt="Grab" onerror="this.style.opacity=.3">
       <!-- Ganti src dengan URL logo sponsor -->
       <img src="sponsor/sponsor-09-pixelpad.png" alt="PixelPad" onerror="this.style.opacity=.3">
-      
+
       <!-- ===== Grup duplikat (untuk loop mulus) ===== -->
       <span style="display:contents" aria-hidden="true">
         <img src="sponsor/sponsor-01-exodus.png" alt="" onerror="this.style.opacity=.3">
@@ -125,7 +127,7 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
     </div>
   </div>
 </section>
-</section><footer>Skor diperbarui otomatis dari server pusat.</footer>
+<footer>Skor diperbarui otomatis dari server pusat.</footer>
 <!-- Supabase Realtime: skor live tanpa menunggu polling. Jika CDN gagal dimuat, halaman tetap jalan dengan polling 15 detik. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
