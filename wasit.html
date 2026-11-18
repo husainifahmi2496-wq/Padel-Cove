@@ -89,7 +89,7 @@ let actionVersion = 0;     // naik setiap aksi wasit; dipakai agar polling lama 
 let renderedKey = null;    // penanda layar skor yang sedang tampil
 let MANUAL = null;         // form input hasil manual Admin/FMD: { q, kode, busy, pesan }
 let BAGAN = null;          // panel bagan gugur Admin/FMD: { kat, data, busy, pesan }
-
+let CARI = null;           // panel cari pemain: { q, busy, hasil, pesan }
 // ---------- Jaringan ----------
 // Semua request punya timeout + tanpa cache. Sebelumnya fetch yang "menggantung"
 // (sinyal lemah) tidak pernah selesai, sehingga isProcessing tetap true dan semua klik berikutnya diabaikan.
@@ -252,6 +252,7 @@ function render() {
   $('#upd').textContent = `Masuk sebagai ${SESSION.nama} (${SESSION.peran.toUpperCase()})`;
 
   if (activeMatch) renderScoring();
+  else if (CARI) renderCari();
   else if (BAGAN) renderBagan();
   else if (MANUAL) renderManual();
   else renderDashboard();
@@ -312,7 +313,13 @@ function renderDashboard() {
     html += `</div>`;
   }
 
-  html += `<h2>Daftar Laga Anda / Tersedia</h2>`;
+  html += `<h2>Pencarian</h2>
+  <div class="card" style="margin-bottom:14px">
+    <p class="mu" style="margin:0 0 10px">Cari pemain berdasarkan nama atau kode pasangan.</p>
+    <button class="btn" onclick="bukaCari()" style="margin-top:0">🔍 Cari Pemain</button>
+  </div>`;
+
+  html += `<h2>Daftar Laga Anda / Tersedia</h2>`
 
   // Laga gugur yang pasangannya belum ditentukan tidak bisa dimulai, jadi disembunyikan dari daftar wasit
   const playable = MATCHES.filter(m => m.pair1_code && m.pair2_code);
@@ -351,6 +358,128 @@ function renderDashboard() {
 }
 
 // ---------- Input Hasil Manual (score sheet kertas, Admin/FMD) ----------
+// ---------- Panel Cari Pemain ----------
+window.bukaCari = () => { CARI = { q: '', busy: false, hasil: [], pesan: '' }; render(); };
+window.tutupCari = () => { CARI = null; refreshData().then(render); };
+
+function cariPemain(q) {
+  const query = (q || '').trim().toLowerCase();
+  if (!query) return [];
+
+  const hasil = [];
+  const seen = new Set();
+
+  // Cari di semua pasangan
+  Object.entries(PAIRS).forEach(([kode, nama]) => {
+    const namaLower = nama.toLowerCase();
+    if (namaLower.includes(query) || kode.toLowerCase().includes(query)) {
+      if (seen.has(kode)) return;
+      seen.add(kode);
+
+      // Cari laga terkait pasangan ini
+      const lagaTerkait = MATCHES.filter(m =>
+        m.pair1_code === kode || m.pair2_code === kode
+      );
+
+      hasil.push({
+        kode,
+        nama,
+        laga: lagaTerkait
+      });
+    }
+  });
+
+  return hasil;
+}
+
+function renderCariHasil() {
+  const box = $('#cari-hasil');
+  if (!box || !CARI) return;
+
+  const q = (CARI.q || '').trim();
+  if (!q) {
+    box.innerHTML = '<p class="mu">Ketik nama pemain atau kode pasangan untuk mulai mencari.</p>';
+    return;
+  }
+
+  const hasil = cariPemain(q);
+  CARI.hasil = hasil;
+
+  if (!hasil.length) {
+    box.innerHTML = `<p class="mu">Tidak ditemukan pemain dengan kata kunci "<b>${esc(q)}</b>".</p>`;
+    return;
+  }
+
+  box.innerHTML = hasil.slice(0, 20).map((p, idx) => {
+    const lagaHtml = p.laga.length
+      ? p.laga.map(m => {
+          const lawan = m.pair1_code === p.kode ? m.pair2_code : m.pair1_code;
+          const isMine = m.assigned_referee === SESSION.kode;
+          const bisaBuka = m.pair1_code && m.pair2_code &&
+            (m.status === 'scheduled' || m.status === 'ready' || m.status === 'live' ||
+             m.status === 'awaiting_confirmation');
+          const statusLabel = m.status === 'live' ? 'LIVE'
+            : m.status === 'awaiting_confirmation' ? 'MENUNGGU KONFIRMASI'
+            : m.status === 'ready' ? 'SIAP'
+            : m.status === 'scheduled' ? 'TERJADWAL'
+            : m.status;
+          return `<div class="row" style="justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--bd)">
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em">
+                ${esc(m.category_code)} · ${esc(m.round_code)} · ${esc(m.code)}
+                ${m.assigned_court ? ' · Lap ' + esc(m.assigned_court) : ''}
+              </div>
+              <div style="font-weight:600;color:${isMine ? 'var(--lime)' : ''}">
+                vs ${esc(namaPair(lawan))}
+              </div>
+              <div style="font-size:10px;color:${m.status === 'live' ? 'var(--lime)' : 'var(--mu)'}">
+                ${esc(statusLabel)}${isMine ? ' · LAGA ANDA' : ''}
+              </div>
+            </div>
+            ${bisaBuka ? `<button class="btn" style="width:auto;padding:8px 14px;margin:0;font-size:10px"
+              onclick="bukaDariCari('${esc(m.code)}')">Buka</button>` : ''}
+          </div>`;
+        }).join('')
+      : '<div class="mu" style="font-size:12px;padding:6px 0">Belum ada laga aktif.</div>';
+
+    return `<div class="card" style="margin-bottom:8px">
+      <div class="meta"><span>${esc(p.kode)}</span></div>
+      <div class="row" style="font-weight:700;font-size:15px"><span>${esc(p.nama)}</span></div>
+      <div style="margin-top:6px">
+        <div style="font-size:10px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">Laga Terkait</div>
+        ${lagaHtml}
+      </div>
+    </div>`;
+  }).join('') + (hasil.length > 20 ? `<p class="mu">${hasil.length - 20} hasil lain. Persempit pencarian.</p>` : '');
+}
+
+window.bukaDariCari = async (code) => {
+  // Simpan state CARI supaya bisa kembali setelah buka laga
+  const kembaliKeCari = CARI ? { ...CARI } : null;
+  CARI = null;
+  await window.pickMatch(code);
+  if (!activeMatch && kembaliKeCari) {
+    // pickMatch gagal, kembali ke cari
+    CARI = kembaliKeCari;
+    render();
+  }
+};
+
+function renderCari() {
+  if (!CARI) return;
+  let html = `<button class="btn g" onclick="tutupCari()" style="margin-bottom:10px">&larr; Kembali ke Daftar</button>
+    <div class="card">
+      <h2 style="margin-top:4px">Cari Pemain</h2>
+      <p class="mu" style="margin:0 0 10px">Cari berdasarkan nama pemain, pasangan, atau kode pasangan.</p>
+      <input id="cari-q" type="search" placeholder="Contoh: Budi, atau A-01" value="${esc(CARI.q || '')}" autocomplete="off">
+      <div id="cari-hasil"></div>
+    </div>`;
+  $('#view').innerHTML = html;
+  const inp = $('#cari-q');
+  inp.oninput = e => { CARI.q = e.target.value; renderCariHasil(); };
+  inp.focus();
+  renderCariHasil();
+}
 window.bukaManual = () => { MANUAL = { q: '', kode: null, busy: false, pesan: '' }; render(); };
 window.tutupManual = () => { MANUAL = null; refreshData().then(render); };
 window.pilihManual = (code) => { if (!MANUAL) return; MANUAL.kode = code; MANUAL.pesan = ''; render(); };
@@ -818,6 +947,7 @@ $('#logoutBtn').onclick = (e) => {
   renderedKey = null;
   BAGAN = null;
   MANUAL = null;
+  CARI = null;
   stopPolling();
   render();
 };
@@ -830,8 +960,10 @@ if (SESSION) {
 
 // Refresh daftar laga saat di dashboard
 setInterval(() => {
-  if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL) {
-    refreshData().then(() => { if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL) render(); });
+  if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL && !CARI) {
+    refreshData().then(() => {
+      if (SESSION && !activeMatch && !pickBusy && !BAGAN && !MANUAL && !CARI) render();
+    });
   }
 }, 10000);
 </script>
