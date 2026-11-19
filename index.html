@@ -33,8 +33,10 @@ h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:va
 .meta .jam{display:inline-block;background:rgba(197,245,68,.15);color:var(--lime);border-radius:6px;padding:2px 8px;font-weight:700;letter-spacing:.04em}
 .row{display:flex;justify-content:space-between;padding:3px 0;font-weight:600}.row b{font:800 20px var(--fh);min-width:26px;text-align:right}
 .row.win{color:var(--lime)}
-.badge{background:var(--lv);color:#23e94b;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
-table{width:100%;border-collapse:collapse;font-size:13px}th{color:var(--mu);font-size:11px}th,td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--bd)}th:nth-child(3),td:nth-child(3){text-align:left}
+.meta .jam.est{background:rgba(197,245,68,.08);border:1px solid rgba(197,245,68,.5);margin-left:4px}
+.meta .jam.est.telat{color:#ffc15a;border-color:rgba(255,193,90,.6);background:rgba(255,193,90,.1)}
+.badge{background:var(--lv);color:#fff;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
+table{width:100%;border-collapse:collapse;font-size:13px}th{color:var(--mu);font-size:11px}th,td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--bd)}th:nth-child(2),td:nth-child(2){text-align:left}
 tr.q td{background:var(--ac2)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 input,select{width:100%;padding:12px 16px;border:0;border-radius:999px;background:#fff;color:var(--navy);font:600 15px system-ui;margin-bottom:12px}
 .mu{color:var(--mu)}
@@ -309,8 +311,62 @@ function formatJam(ts) {
   try {
     const d = new Date(ts);
     if (isNaN(d.getTime())) return '';
-    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return d.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false });
   } catch (e) { return ''; }
+}
+
+// ====== PERKIRAAN JAM MULAI (hanya tampilan; jadwal resmi di database tidak berubah) ======
+// Laga maju hanya jika laga sebelumnya di lapangan yang sama selesai lebih awal DAN slotnya rapat (tanpa jeda istirahat).
+// Laga mundur jika laga sebelumnya, atau pasangan/laga penentu, belum selesai pada jamnya.
+const DURASI_LAGA = 20;  // menit, perkiraan lama satu laga
+const JEDA_LAGA   = 1;   // menit, jeda ganti pasangan di lapangan
+const MAJU_MAKS   = 10;  // menit, batas maju dari jam resmi
+const SLOT_RAPAT  = 5;   // menit, selisih maks. antara perkiraan selesai laga sebelumnya dan jam resmi agar dianggap rapat
+const BEDA_MIN    = 3;   // menit, selisih minimum agar perkiraan ditampilkan
+const BULAT_MENIT = 5;   // perkiraan dibulatkan ke kelipatan ini
+
+function hitungEstimasi() {
+  const MS = 60000, now = Date.now();
+  const SELESAI = ['finished', 'walkover', 'retired'];
+  const urut = M.filter(m => m.ps).sort((a, b) => (new Date(a.ps) - new Date(b.ps)) || (a.id < b.id ? -1 : 1));
+  const akhirLaga = {}, akhirPair = {}, lapTerakhir = {};
+  urut.forEach(m => {
+    m.est = ''; m.estArah = '';
+    if (m.status === 'cancelled') return;
+    const ps = new Date(m.ps).getTime();
+    const mul = m.mul ? new Date(m.mul).getTime() : ps;
+    let akhir;
+    if (SELESAI.includes(m.status)) {
+      akhir = m.fin ? new Date(m.fin).getTime() : mul + DURASI_LAGA * MS;
+    } else if (m.status === 'live') {
+      akhir = Math.max(mul + DURASI_LAGA * MS, now);
+    } else if (m.status === 'awaiting_confirmation') {
+      akhir = now;
+    } else {
+      // scheduled / ready: belum dimulai
+      const kendala = [];
+      [[m.p1c, m.s1], [m.p2c, m.s2]].forEach(([kode, src]) => {
+        if (kode) { if (akhirPair[kode]) kendala.push(akhirPair[kode]); return; }
+        if (/^[WL]:/.test(src || '') && akhirLaga[src.slice(2)]) kendala.push(akhirLaga[src.slice(2)]);
+      });
+      const lap = lapTerakhir[m.lapEst];
+      if (lap) kendala.push(lap.akhir);
+      let est = ps;
+      if (lap && m.p1c && m.p2c && ps - lap.planEnd <= SLOT_RAPAT * MS && lap.akhir < lap.planEnd) {
+        est = ps + Math.max(lap.akhir - lap.planEnd, -MAJU_MAKS * MS);
+      }
+      kendala.forEach(k => { est = Math.max(est, k + JEDA_LAGA * MS); });
+      est = Math.max(est, now);
+      akhir = est + DURASI_LAGA * MS;
+      if (Math.abs(est - ps) >= BEDA_MIN * MS) {
+        m.est = formatJam(Math.round(est / (BULAT_MENIT * MS)) * BULAT_MENIT * MS);
+        m.estArah = est > ps ? 'telat' : 'maju';
+      }
+    }
+    akhirLaga[m.id] = akhir;
+    if (m.lapEst) lapTerakhir[m.lapEst] = { akhir, planEnd: ps + DURASI_LAGA * MS };
+    [m.p1c, m.p2c].forEach(k => { if (k) akhirPair[k] = akhir; });
+  });
 }
 
 let fetching = false, fetchLagi = false, lastPairs = 0, lastUpd = '';
@@ -321,7 +377,7 @@ async function fetchData() {
   try {
     const ambilPairs = !P.length || Date.now() - lastPairs > 600000;
     const [resM, resS, resK, resP] = await Promise.all([
-      fetch(`${SUPA_URL}/rest/v1/matches?select=code,category_code,match_type,round_code,group_code,pair1_code,pair2_code,pair1_source,pair2_source,status,games1,games2,assigned_court,planned_start&order=planned_start.asc.nullslast,code.asc`, { headers: HEADERS }),
+      fetch(`${SUPA_URL}/rest/v1/matches?select=code,category_code,match_type,round_code,group_code,pair1_code,pair2_code,pair1_source,pair2_source,status,games1,games2,assigned_court,planned_court,planned_start,started_at,finished_at&order=planned_start.asc.nullslast,code.asc`, { headers: HEADERS }),
       fetch(`${SUPA_URL}/rest/v1/match_state?select=match_code,games1,games2,display1,display2`, { headers: HEADERS }),
       fetch(`${SUPA_URL}/rest/v1/v_klasemen_publik?select=*`, { headers: HEADERS }),
       ambilPairs ? fetch(`${SUPA_URL}/rest/v1/pairs?select=code,player1,player2,category_code,group_code`, { headers: HEADERS }) : null
@@ -349,6 +405,9 @@ async function fetchData() {
         p1: nama1 ? `${nama1.player1} / ${nama1.player2}` : (m.pair1_code || labelSumber(m.pair1_source)),
         p2: nama2 ? `${nama2.player1} / ${nama2.player2}` : (m.pair2_code || labelSumber(m.pair2_source)),
         lap: m.assigned_court || '-', 
+        lapEst: m.assigned_court || m.planned_court || '',
+        ps: m.planned_start, mul: m.started_at, fin: m.finished_at,
+        p1c: m.pair1_code, p2c: m.pair2_code, s1: m.pair1_source, s2: m.pair2_source,
         status: m.status,
         g1: m.status === 'finished' ? m.games1 : (st ? st.games1 : 0),
         g2: m.status === 'finished' ? m.games2 : (st ? st.games2 : 0),
@@ -359,6 +418,7 @@ async function fetchData() {
       };
     });
 
+    hitungEstimasi();
     render();
     lastUpd = 'Diperbarui ' + jam();
     tampilStatus();
@@ -452,7 +512,8 @@ function card(m) {
   const pt1 = m.d1 ? '<span class="pt">' + esc(m.d1) + '</span>' : '';
   const pt2 = m.d2 ? '<span class="pt">' + esc(m.d2) + '</span>' : '';
   const katLabel = KATEGORI_LABEL[m.kat] || m.kat;
-  const jamHtml = m.jam ? ' <span class="jam">⏰ ' + esc(m.jam) + '</span>' : '';
+  const jamHtml = (m.jam ? ' <span class="jam">⏰ ' + esc(m.jam) + '</span>' : '') +
+    (m.est ? ' <span class="jam est ' + m.estArah + '" title="Perkiraan mulai">≈ ' + esc(m.est) + '</span>' : '');
 
   return '<div class="card' + (m.live ? ' live' : '') + '"><div class="meta"><span>' + esc(katLabel) + ' · ' + esc(m.babak) + jamHtml + '</span><span>' + when + '</span></div>' +
     '<div class="row' + (w == 1 ? ' win' : '') + '"><span>' + esc(m.p1) + '</span><b>' + (s ? esc(s[0]) : '') + '</b>' + pt1 + '</div>' +
@@ -479,7 +540,7 @@ const V = {
     const r = M.filter(m => m.status === 'finished').reverse().slice(0, 6);
 
     return '<h2>Sedang berlangsung</h2>' + (a.map(card).join('') || '<p class="mu">Belum ada pertandingan yang berlangsung.</p>') +
-      '<h2>Pertandingan berikutnya</h2>' + (n.map(card).join('') || '<p class="mu">Tidak ada jadwal berikutnya.</p>') +
+      '<h2>Pertandingan berikutnya</h2>' + (n.map(card).join('') || '<p class="mu">Tidak ada jadwal berikutnya.</p>') + (n.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '') +
       '<h2>Hasil terbaru</h2>' + (r.map(card).join('') || '<p class="mu">Belum ada hasil.</p>');
   },
   klas() {
@@ -509,7 +570,7 @@ const V = {
     const l = filterTgl === 'all' ? semua : semua.filter(m => m.tgl === filterTgl);
     const judul = filterTgl === 'all' ? 'Semua jadwal' : (NAMA_HARI[filterTgl] || filterTgl);
     return '<h2 class="dhead">' + esc(judul) + '<span>' + l.length + ' pertandingan</span></h2>' +
-      (l.map(card).join('') || '<p class="mu">Belum ada jadwal di tanggal ini.</p>');
+      (l.map(card).join('') || '<p class="mu">Belum ada jadwal di tanggal ini.</p>') + (l.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '');
   },
   cari() { return '<input id="q" type="search" placeholder="Ketikan nama pemain" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
 };
