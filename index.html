@@ -22,9 +22,55 @@ h1 em{display:block;color:var(--lime);text-shadow:0 2px 0 var(--limed)}
 header small{color:var(--mu)}
 .tape{overflow:hidden;white-space:nowrap;background:var(--lime);color:var(--navy);font:800 11px var(--fh);letter-spacing:.14em;padding:9px 0;transform:rotate(-1.6deg);margin:14px -8px 10px;box-shadow:0 3px 0 var(--navy)}
 .tape span{display:inline-block;padding-left:16px}
-nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:rgba(8,30,95,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:5;border-bottom:1px solid rgba(197,245,68,.25)}
-nav button,.chip{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:999px;padding:8px 16px;font:700 12px var(--fh);letter-spacing:.04em;white-space:nowrap;cursor:pointer}
-nav button.on,.chip.on{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+nav{display:flex;justify-content:center;padding:10px 12px;background:rgba(8,30,95,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:5;border-bottom:1px solid rgba(197,245,68,.25)}
+/* Container untuk navigasi utama */
+nav .nseg {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 kolom untuk 4 menu */
+  background: rgba(8,30,95,.7);
+  border: 1.5px solid rgba(255,255,255,.22);
+  border-radius: 18px;
+  padding: 4px;
+  --i: 0; /* Variabel untuk posisi geser */
+}
+
+/* Kapsul hijau yang bergeser */
+nav .nseg::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 4);
+  border-radius: 14px;
+  background: var(--lime);
+  box-shadow: 0 3px 0 var(--limed);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform .4s cubic-bezier(.34,1.35,.5,1);
+}
+
+/* Tombol di dalam navigasi */
+nav button {
+  position: relative;
+  z-index: 1;
+  background: none !important;
+  border: 0 !important;
+  color: #fff;
+  padding: 10px 4px;
+  font: 700 12px var(--fh);
+  text-align: center;
+  cursor: pointer;
+  transition: color .25s;
+}
+
+nav button.on {
+  color: var(--navy) !important;
+}
+
+/* Mempertahankan gaya chip untuk filter klasemen */
+.chip{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:999px;padding:8px 16px;font:700 12px var(--fh);letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--lime);color:var(--navy);border-color:var(--lime)}
 main{max-width:760px;margin:0 auto;padding:14px 12px}
 h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin:20px 0 10px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:12px 14px;margin-bottom:10px;backdrop-filter:blur(4px)}
@@ -666,8 +712,13 @@ function render() {
     $('#view').innerHTML = V.live();
     return;
   }
-  $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
-
+  // Render tombol navigasi dengan struktur pembungkus .nseg
+const idxNav = TABS.findIndex(t => t[0] === tab);
+$('#nav').innerHTML = `
+  <div class="nseg" style="--i: ${idxNav}">
+    ${TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('')}
+  </div>
+`;
   renderSponsor(tab);
   renderDatebar();
 
