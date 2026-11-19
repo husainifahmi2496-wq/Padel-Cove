@@ -22,7 +22,7 @@ h1 em{display:block;color:var(--lime);text-shadow:0 2px 0 var(--limed)}
 header small{color:var(--mu)}
 .tape{overflow:hidden;white-space:nowrap;background:var(--lime);color:var(--navy);font:800 11px var(--fh);letter-spacing:.14em;padding:9px 0;transform:rotate(-1.6deg);margin:14px -8px 10px;box-shadow:0 3px 0 var(--navy)}
 .tape span{display:inline-block;padding-left:16px}
-nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:rgba(8,30,95,.88);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:rgba(8,30,95,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:5;border-bottom:1px solid rgba(197,245,68,.25)}
 nav button,.chip{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:999px;padding:8px 16px;font:700 12px var(--fh);letter-spacing:.04em;white-space:nowrap;cursor:pointer}
 nav button.on,.chip.on{background:var(--lime);color:var(--navy);border-color:var(--lime)}
 main{max-width:760px;margin:0 auto;padding:14px 12px}
@@ -33,7 +33,7 @@ h2{font:800 13px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:va
 .meta .jam{display:inline-block;background:rgba(197,245,68,.15);color:var(--lime);border-radius:6px;padding:2px 8px;font-weight:700;letter-spacing:.04em}
 .row{display:flex;justify-content:space-between;padding:3px 0;font-weight:600}.row b{font:800 20px var(--fh);min-width:26px;text-align:right}
 .row.win{color:var(--lime)}
-.badge{background:var(--lv);color:#fff;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
+.badge{background:var(--lv);color:#23e94b;border-radius:6px;padding:2px 8px;font:800 10px var(--fh)}
 table{width:100%;border-collapse:collapse;font-size:13px}th{color:var(--mu);font-size:11px}th,td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--bd)}th:nth-child(3),td:nth-child(3){text-align:left}
 tr.q td{background:var(--ac2)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 input,select{width:100%;padding:12px 16px;border:0;border-radius:999px;background:#fff;color:var(--navy);font:600 15px system-ui;margin-bottom:12px}
@@ -50,12 +50,13 @@ footer{text-align:center;color:var(--mu);font-size:12px;padding:8px 8px calc(18p
   max-width:736px;margin:0 auto;
   padding:12px 12px calc(12px + env(safe-area-inset-bottom));
   text-align:center;
-  background:linear-gradient(180deg, rgba(10,42,122,.92) 0%, rgba(6,24,80,.98) 100%);
-  backdrop-filter:blur(10px);
-  border-top:1.5px solid rgba(197,245,68,.45);
+  background:rgba(10,42,122,.30);           /* 70% transparan, tetap nuansa navy */
+  backdrop-filter:blur(14px) saturate(140%); /* blur konten di belakang agar logo tetap fokus */
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  border-top:1.5px solid rgba(197,245,68,.55);
   border-radius:16px 16px 0 0;
   color:#fff;
-  box-shadow:0 -6px 22px rgba(0,0,0,.35), 0 -1px 0 rgba(197,245,68,.15) inset;
+  box-shadow:0 -6px 22px rgba(0,0,0,.3);
 }
 body{padding-bottom:calc(var(--spons-h, 110px) + 16px)}
 .spons-grid{display:grid;gap:8px;align-content:center;}
@@ -65,19 +66,42 @@ body{padding-bottom:calc(var(--spons-h, 110px) + 16px)}
 .spons-item{
   display:flex;align-items:center;justify-content:center;
   height:var(--h);padding:6px 8px;
-  background:rgba(255,255,255,.94);
+  background:rgba(255,255,255,.92);          /* kartu logo tetap terang */
   border:1px solid rgba(197,245,68,.35);
   border-radius:12px;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  box-shadow:0 2px 8px rgba(0,0,0,.28);
   transition:transform .25s ease, box-shadow .25s ease;
 }
-.spons-item:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.3);}
+.spons-item:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.35);}
 .spons-item img{width:100%;height:100%;object-fit:contain;}
 .spons-grid{transition:opacity .35s ease}
 .spons-grid.fade{opacity:0}
 .spons-txt{font:800 11px var(--fh);color:var(--navy);line-height:1.2;text-align:center}
-  
-/* ====== MODE OVERLAY (Live Streaming) ====== */
+/* ====== FILTER TANGGAL JADWAL ====== */
+#datebar{max-width:760px;margin:0 auto;padding:12px 12px 0;display:none}
+#datebar.show{display:block}
+.dseg{position:relative;display:grid;grid-template-columns:repeat(var(--n,4),1fr);background:rgba(8,30,95,.7);border:1.5px solid rgba(255,255,255,.22);border-radius:18px;padding:4px;--i:0}
+.dseg::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/var(--n,4));border-radius:14px;background:var(--lime);box-shadow:0 3px 0 var(--limed);transform:translateX(calc(var(--i)*100%));transition:transform .4s cubic-bezier(.34,1.35,.5,1)}
+.dseg button b.kt{font:800 11px/1.25 var(--fh);text-align:center;padding:13px 4px;letter-spacing:.02em}
+.dseg button{position:relative;z-index:1;background:none;border:0;color:#fff;padding:9px 2px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .25s}
+.dseg button small{font:700 9px var(--fh);letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.dseg button b{font:900 20px/1 var(--fh)}
+.dseg button b.rng{font-size:13px;padding:3px 0}
+.dseg button.on{color:var(--navy)}
+.dseg button.on small{opacity:.8}
+.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dhead span{color:var(--mu);font-size:11px;letter-spacing:.06em}
+
+@keyframes geser{
+  from{opacity:0;transform:translateX(calc(var(--dir,1)*26px)) rotate(calc(var(--dir,1)*.5deg))}
+  to{opacity:1;transform:none}
+}
+#view.ganti .card,#view.ganti h2{animation:geser .36s cubic-bezier(.2,.8,.25,1) both;animation-delay:calc(var(--n,0)*45ms)}
+@media (prefers-reduced-motion:reduce){
+  .dseg::before{transition:none}
+  #view.ganti .card,#view.ganti h2{animation:none}
+}
+/*=== MODE OVERLAY (Live Streaming) ====== */
 body.overlay-mode{background:transparent !important;padding-top:0;padding-bottom:0}
 body.overlay-mode header,
 body.overlay-mode .tape,
@@ -102,6 +126,7 @@ body.overlay-mode h2{text-shadow:0 2px 4px rgba(0,0,0,.9)}
 </header>
 <div class="tape"><span>LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦ LIVE SCORE ✦ LIVE KLASEMEN ✦ JADWAL ✦ COVE PADEL PURWOKERTO ✦</span></div>
 <nav id="nav"></nav>
+<div id="datebar"></div>
 <main id="view"></main>
 
 <section class="spons">
@@ -186,6 +211,81 @@ const KATEGORI_LABEL = {
   'MB': "Men's Bronze"
 };
 let filterKat = null; 
+// ====== FILTER TANGGAL ======
+const HARI = [
+  ['all', 'Semua', '20–22'],
+  ['2026-11-20', 'Jum', '20'],
+  ['2026-11-21', 'Sab', '21'],
+  ['2026-11-22', 'Min', '22']
+];
+const NAMA_HARI = {
+  '2026-11-20': 'Jumat, 20 November',
+  '2026-11-21': 'Sabtu, 21 November',
+  '2026-11-22': 'Minggu, 22 November'
+};
+let filterTgl = null, animDir = 0;
+
+function tglKey(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); // YYYY-MM-DD
+}
+function tglDefault() {
+  const hariIni = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+  return HARI.some(h => h[0] === hariIni) ? hariIni : '2026-11-20';
+}
+
+function daftarKat() { return [...new Set(K.map(k => k.category_code))]; }
+
+function renderDatebar() {
+  const bar = $('#datebar'); if (!bar) return;
+  const jdw = tab === 'jadwal' && !IS_OVERLAY;
+  const kls = tab === 'klas' && !IS_OVERLAY && K.length > 0;
+  if (!jdw && !kls) { bar.classList.remove('show'); bar.innerHTML = ''; bar.dataset.sig = ''; return; }
+
+  let html, idx, n, sig;
+  if (jdw) {
+    if (!filterTgl) filterTgl = tglDefault();
+    n = HARI.length;
+    idx = HARI.findIndex(h => h[0] === filterTgl);
+    sig = 'jadwal';
+    html = HARI.map(h =>
+      '<button data-d="' + h[0] + '"><small>' + h[1] + '</small><b' + (h[0] === 'all' ? ' class="rng"' : '') + '>' + h[2] + '</b></button>'
+    ).join('');
+  } else {
+    const arr = daftarKat();
+    if (!filterKat || !arr.includes(filterKat)) filterKat = arr[0];
+    n = arr.length;
+    idx = arr.indexOf(filterKat);
+    sig = 'klas:' + arr.join(',');
+    html = arr.map(k =>
+      '<button data-f="kat" data-v="' + esc(k) + '"><b class="kt">' + esc(KATEGORI_LABEL[k] || k) + '</b></button>'
+    ).join('');
+  }
+
+  if (bar.dataset.sig !== sig) {
+    bar.innerHTML = '<div class="dseg">' + html + '</div>';
+    bar.dataset.sig = sig;
+  }
+  bar.classList.add('show');
+  const seg = bar.firstChild;
+  seg.style.setProperty('--n', n);
+  seg.style.setProperty('--i', idx);
+  seg.querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i === idx));
+}
+
+let animT = null;
+function animasiGanti() {
+  if (!animDir) return;
+  const v = $('#view');
+  v.style.setProperty('--dir', animDir);
+  v.querySelectorAll('h2,.card').forEach((c, i) => c.style.setProperty('--n', Math.min(i, 8)));
+  v.classList.remove('ganti'); void v.offsetWidth; v.classList.add('ganti');
+  clearTimeout(animT);
+  animT = setTimeout(() => v.classList.remove('ganti'), 900);
+  animDir = 0;
+}
 
 // G:A:1 -> Juara Grup A, W:BW-QF1 -> Pemenang QF1, L:BW-SF1 -> Kalah SF1
 function labelSumber(src) {
@@ -254,7 +354,8 @@ async function fetchData() {
         g2: m.status === 'finished' ? m.games2 : (st ? st.games2 : 0),
         d1: st ? st.display1 : '', d2: st ? st.display2 : '',
         live: m.status === 'live',
-        jam: formatJam(m.planned_start)
+        jam: formatJam(m.planned_start),
+        tgl: tglKey(m.planned_start)
       };
     });
 
@@ -387,7 +488,7 @@ const V = {
     
     if (!filterKat || !KAT.includes(filterKat)) filterKat = KAT[0];
 
-    let html = chips(KAT, filterKat, 'kat');
+    let html = '';
 
     const grupMap = {};
     K.filter(k => k.category_code === filterKat).forEach(k => {
@@ -403,8 +504,12 @@ const V = {
     return html + '<p class="mu">M = main, W = menang, L = kalah, Poin = selisih game. Baris biru = zona lolos.</p>';
   },
   jadwal() {
-    const l = M.filter(m => m.status === 'scheduled' || m.status === 'ready');
-    return (l.map(card).join('') || '<p class="mu">Belum ada jadwal.</p>');
+    if (!filterTgl) filterTgl = tglDefault();
+    const semua = M.filter(m => m.status === 'scheduled' || m.status === 'ready');
+    const l = filterTgl === 'all' ? semua : semua.filter(m => m.tgl === filterTgl);
+    const judul = filterTgl === 'all' ? 'Semua jadwal' : (NAMA_HARI[filterTgl] || filterTgl);
+    return '<h2 class="dhead">' + esc(judul) + '<span>' + l.length + ' pertandingan</span></h2>' +
+      (l.map(card).join('') || '<p class="mu">Belum ada jadwal di tanggal ini.</p>');
   },
   cari() { return '<input id="q" type="search" placeholder="Ketikan nama pemain" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
 };
@@ -501,27 +606,38 @@ function render() {
     return;
   }
   $('#nav').innerHTML = TABS.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + t[1] + '</button>').join('');
-  
-  // Ganti sponsor sesuai tab yang aktif
+
   renderSponsor(tab);
+  renderDatebar();
 
   if (tab === 'cari' && $('#q')) return hasilCari();
-  $('#view').innerHTML = V[tab](); 
+  if (!animDir) $('#view').classList.remove('ganti');
+  $('#view').innerHTML = V[tab]();
+  animasiGanti();
   if (tab === 'cari') hasilCari();
 }
 
 document.addEventListener('click', e => {
-  const el = e.target.closest('[data-t],[data-f]'); if (!el) return; const d = el.dataset;
+  const el = e.target.closest('[data-t],[data-f],[data-d]'); if (!el) return; const d = el.dataset;
   if (d.t) { tab = d.t; return render(); }
-  
+
+  if (d.d) {
+    if (d.d === filterTgl) return;
+    const lama = HARI.findIndex(h => h[0] === filterTgl);
+    const baru = HARI.findIndex(h => h[0] === d.d);
+    animDir = baru > lama ? 1 : -1;
+    filterTgl = d.d;
+    return render();
+  }
+
   if (d.f === 'kat') {
+    if (d.v === filterKat) return;
+    const arr = daftarKat();
+    animDir = arr.indexOf(d.v) > arr.indexOf(filterKat) ? 1 : -1;
     filterKat = d.v;
-    render();
+    return render();
   }
 });
-
-document.addEventListener('input', e => { if (e.target.id === 'q') { q = e.target.value; hasilCari(); } });
-
 // Render awal & polling
 render();
 fetchData();
