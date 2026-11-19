@@ -370,6 +370,10 @@ const MAJU_MAKS   = 10;  // menit, batas maju dari jam resmi
 const SLOT_RAPAT  = 5;   // menit, selisih maks. antara perkiraan selesai laga sebelumnya dan jam resmi agar dianggap rapat
 const BEDA_MIN    = 3;   // menit, selisih minimum agar perkiraan ditampilkan
 const BULAT_MENIT = 5;   // perkiraan dibulatkan ke kelipatan ini
+// Durasi khusus laga grup per kategori (menit), contoh { BW: 14 } untuk slot 15 menit.
+// Kosong = semua kategori memakai DURASI_LAGA (slot 21 menit = 20 main + 1 ganti), sesuai OOP terbaru.
+const DURASI_GRUP_KAT = {};
+const durasiLaga = m => (/^Group/.test(m.babak || '') && DURASI_GRUP_KAT[m.kat]) || DURASI_LAGA;
 
 function hitungEstimasi() {
   const MS = 60000, now = Date.now();
@@ -383,9 +387,9 @@ function hitungEstimasi() {
     const mul = m.mul ? new Date(m.mul).getTime() : ps;
     let akhir;
     if (SELESAI.includes(m.status)) {
-      akhir = m.fin ? new Date(m.fin).getTime() : mul + DURASI_LAGA * MS;
+      akhir = m.fin ? new Date(m.fin).getTime() : mul + durasiLaga(m) * MS;
     } else if (m.status === 'live') {
-      akhir = Math.max(mul + DURASI_LAGA * MS, now);
+      akhir = Math.max(mul + durasiLaga(m) * MS, now);
     } else if (m.status === 'awaiting_confirmation') {
       akhir = now;
     } else {
@@ -403,14 +407,14 @@ function hitungEstimasi() {
       }
       kendala.forEach(k => { est = Math.max(est, k + JEDA_LAGA * MS); });
       est = Math.max(est, now);
-      akhir = est + DURASI_LAGA * MS;
+      akhir = est + durasiLaga(m) * MS;
       if (Math.abs(est - ps) >= BEDA_MIN * MS) {
         m.est = formatJam(Math.round(est / (BULAT_MENIT * MS)) * BULAT_MENIT * MS);
         m.estArah = est > ps ? 'telat' : 'maju';
       }
     }
     akhirLaga[m.id] = akhir;
-    if (m.lapEst) lapTerakhir[m.lapEst] = { akhir, planEnd: ps + DURASI_LAGA * MS };
+    if (m.lapEst) lapTerakhir[m.lapEst] = { akhir, planEnd: ps + durasiLaga(m) * MS };
     [m.p1c, m.p2c].forEach(k => { if (k) akhirPair[k] = akhir; });
   });
 }
@@ -558,8 +562,10 @@ function card(m) {
   const pt1 = m.d1 ? '<span class="pt">' + esc(m.d1) + '</span>' : '';
   const pt2 = m.d2 ? '<span class="pt">' + esc(m.d2) + '</span>' : '';
   const katLabel = KATEGORI_LABEL[m.kat] || m.kat;
-  const jamHtml = (m.jam ? ' <span class="jam">⏰ ' + esc(m.jam) + '</span>' : '') +
-    (m.est ? ' <span class="jam est ' + m.estArah + '" title="Perkiraan mulai">≈ ' + esc(m.est) + '</span>' : '');
+  // Jika ada perkiraan (maju/mundur), jam resmi + ikon ⏰ disembunyikan; yang tampil hanya perkiraan.
+  const jamHtml = m.est
+    ? ' <span class="jam est ' + m.estArah + '" title="Perkiraan mulai (jadwal resmi ' + esc(m.jam) + ')">≈ ' + esc(m.est) + '</span>'
+    : (m.jam ? ' <span class="jam">⏰ ' + esc(m.jam) + '</span>' : '');
 
   return '<div class="card' + (m.live ? ' live' : '') + '"><div class="meta"><span>' + esc(katLabel) + ' · ' + esc(m.babak) + jamHtml + '</span><span>' + when + '</span></div>' +
     '<div class="row' + (w == 1 ? ' win' : '') + '"><span>' + esc(m.p1) + '</span><b>' + (s ? esc(s[0]) : '') + '</b>' + pt1 + '</div>' +
@@ -586,7 +592,7 @@ const V = {
     const r = M.filter(m => m.status === 'finished').reverse().slice(0, 6);
 
     return '<h2>Sedang berlangsung</h2>' + (a.map(card).join('') || '<p class="mu">Belum ada pertandingan yang berlangsung.</p>') +
-      '<h2>Pertandingan berikutnya</h2>' + (n.map(card).join('') || '<p class="mu">Tidak ada jadwal berikutnya.</p>') + (n.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '') +
+      '<h2>Pertandingan berikutnya</h2>' + (n.map(card).join('') || '<p class="mu">Tidak ada jadwal berikutnya.</p>') + (n.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai (jadwal bergeser) menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '') +
       '<h2>Hasil terbaru</h2>' + (r.map(card).join('') || '<p class="mu">Belum ada hasil.</p>');
   },
   klas() {
@@ -616,7 +622,7 @@ const V = {
     const l = filterTgl === 'all' ? semua : semua.filter(m => m.tgl === filterTgl);
     const judul = filterTgl === 'all' ? 'Semua jadwal' : (NAMA_HARI[filterTgl] || filterTgl);
     return '<h2 class="dhead">' + esc(judul) + '<span>' + l.length + ' pertandingan</span></h2>' +
-      (l.map(card).join('') || '<p class="mu">Belum ada jadwal di tanggal ini.</p>') + (l.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '');
+      (l.map(card).join('') || '<p class="mu">Belum ada jadwal di tanggal ini.</p>') + (l.some(m => m.est) ? '<p class="mu">⏰ = jam resmi. ≈ = perkiraan mulai (jadwal bergeser) menurut laga sebelumnya di lapangan yang sama; bisa berubah.</p>' : '');
   },
   cari() { return '<input id="q" type="search" placeholder="Ketikan nama pemain" value="' + esc(q) + '" autocomplete="off"><div id="hs"></div>'; }
 };
@@ -628,7 +634,7 @@ function hasilCari() {
   const filtered = P.filter(r => (r.player1 + ' ' + r.player2 + ' ' + r.code).toLowerCase().includes(t));
   box.innerHTML = filtered.slice(0, 12).map(r => {
     const nama = r.player1 + ' / ' + r.player2;
-    const laga = M.filter(m => m.p1 === nama || m.p2 === nama).map(card).join('');
+    const laga = M.filter(m => m.p1c === r.code || m.p2c === r.code).map(card).join('');
     return `<h2>${esc(nama)}</h2><p class="mu">${esc(KATEGORI_LABEL[r.category_code] || r.category_code)} · Group ${esc(r.group_code || '-')} · ${esc(r.code)}</p>` + (laga || '<p class="mu">Belum ada jadwal.</p>');
   }).join('') || '<p class="mu">Pemain tidak ditemukan.</p>';
 }
@@ -728,6 +734,11 @@ $('#nav').innerHTML = `
   animasiGanti();
   if (tab === 'cari') hasilCari();
 }
+
+// Cari pemain: perbarui hasil setiap kali mengetik
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'q') { q = e.target.value; hasilCari(); }
+});
 
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-t],[data-f],[data-d]'); if (!el) return; const d = el.dataset;
