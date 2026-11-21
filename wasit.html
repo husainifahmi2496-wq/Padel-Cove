@@ -488,7 +488,7 @@ window.batalManual = () => { if (!MANUAL) return; MANUAL.kode = null; render(); 
 function manualKandidat() {
   const q = (MANUAL.q || '').trim().toLowerCase();
   return MATCHES
-    .filter(m => m.pair1_code && m.pair2_code && (m.status === 'scheduled' || m.status === 'ready'))
+    .filter(m => m.pair1_code && m.pair2_code && (m.status === 'scheduled' || m.status === 'ready' || m.status === 'live' || m.status === 'awaiting_confirmation'))
     .filter(m => !q || (m.code + ' ' + namaPair(m.pair1_code) + ' ' + namaPair(m.pair2_code)).toLowerCase().includes(q));
 }
 
@@ -502,7 +502,9 @@ function renderManualList() {
       <div class="meta"><span>${esc(m.category_code)} · ${esc(m.round_code)}</span><span>${esc(m.code)}</span></div>
       <div class="row"><span>${esc(namaPair(m.pair1_code))}</span></div>
       <div class="row"><span>${esc(namaPair(m.pair2_code))}</span></div>
-      ${m.assigned_referee ? `<div class="meta" style="margin:6px 0 0"><span class="wr">Sudah dipilih ${esc(m.assigned_referee)} di web</span></div>` : ''}
+      ${(m.status === 'live' || m.status === 'awaiting_confirmation')
+        ? `<div class="meta" style="margin:6px 0 0"><span class="wr">SEDANG LIVE${m.assigned_referee ? ' — dipegang ' + esc(m.assigned_referee) : ''}. Menyimpan akan mengambil alih dan menyelesaikan laga.</span></div>`
+        : (m.assigned_referee ? `<div class="meta" style="margin:6px 0 0"><span class="wr">Sudah dipilih ${esc(m.assigned_referee)} di web</span></div>` : '')}
     </div>`).join('') + (l.length > 30 ? `<p class="mu">${l.length - 30} laga lain. Persempit pencarian.</p>` : '');
 }
 
@@ -557,7 +559,9 @@ window.simpanManual = async () => {
   if ((t1 === null) !== (t2 === null)) return msg('Isi skor tiebreak keduanya, atau kosongkan keduanya.', true);
 
   const n1 = namaPair(m.pair1_code), n2 = namaPair(m.pair2_code);
-  if (!confirm(`Simpan hasil ${m.code}?\n\n${n1}  ${g1}\n${n2}  ${g2}` + (t1 !== null ? `\n(Tiebreak ${t1}-${t2})` : ''))) return;
+  const peringatanLive = (m.status === 'live' || m.status === 'awaiting_confirmation')
+    ? `\n\nPERHATIAN: laga ini sedang live${m.assigned_referee ? ' dan dipegang ' + m.assigned_referee : ''}. Hasil ini akan menggantikan input wasit dan langsung menyelesaikan laga.` : '';
+  if (!confirm(`Simpan hasil ${m.code}?\n\n${n1}  ${g1}\n${n2}  ${g2}` + (t1 !== null ? `\n(Tiebreak ${t1}-${t2})` : '') + peringatanLive)) return;
   const pin = getPin();
   if (!pin) return;
 
